@@ -14,10 +14,7 @@ const Game = () => {
 
   const socket = useSocket('acceptuser', (message) => {
     const username = message[0];
-    const room = message[1];
-    // $('#login-div').hide();
-    // $('#game-div').show();
-    // $('#room-indicator').html('<strong>You are in room: ' + room + '</strong>');
+    localStorage.setItem('userName', username);
   });
 
   // useSocket("message.chat2", () => {
