@@ -1,22 +1,35 @@
 :root {
+  --black: #17181a;
   --green: rgb(129, 186, 122);
   --yellow: rgb(227, 226, 108);
   --blue: rgb(51, 115, 152);
 }
 
-html {
-  background-color: var(--green);
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  outline: none;
 }
 
-body {
-  width: 800px;
-  color: black;
-  max-width: 95%;
-  padding: 1rem;
-  margin: 1rem auto;
-  border: 0.5rem solid black;
-  font-family: "Roboto", sans-serif;
-  background-color: var(--yellow);
+body,
+html {
+  color: var(--black);
+  height: 100%;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+html {
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: $transparent;
+  font-size: 16px;
+  background-color: var(--green);
 }
 
 hr {

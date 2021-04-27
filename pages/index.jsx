@@ -2,7 +2,11 @@ import React from "react";
 import Game from "../modules/Game";
 
 const Home = (props) => {
-  return <Game />;
+  return (
+    <PageLayout>
+      <Game />
+    </PageLayout>
+  );
 };
 
 // Home.getInitialProps = async () => {

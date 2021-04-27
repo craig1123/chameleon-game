@@ -1,3 +1,20 @@
-*node_modules*
+# Build output
+dist
+.next
+
+# Dependencies
+node_modules/
+
+# Keys
+.env
+.env.*
+.env.development
+.env.production
+
+# Logs
+*.log*
+
+.vscode/
+.DS_Store
 
 .idea

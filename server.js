@@ -14,11 +14,11 @@ const nextHandler = nextApp.getRequestHandler();
 // ======
 
 // an array of all users
-var users = [];
+const users = [];
 // users by room
-var rooms = {};
+const rooms = {};
 // grid by room
-var active_grids = {};
+const active_grids = {};
 
 // =========
 // functions
@@ -31,7 +31,7 @@ function getRandomChoice(N) {
 
 // remove a user from an array
 function removeUser(username, array) {
-  var index = array.indexOf(username);
+  const index = array.indexOf(username);
   // if we found a use remove them
   if (index > -1) {
     array.splice(index, 1);
@@ -40,7 +40,7 @@ function removeUser(username, array) {
 
 // is a username available?
 function isUsernameAvailable(username) {
-  var index = users.indexOf(username);
+  const index = users.indexOf(username);
   if (index > -1) {
     return false;
   } else {
@@ -61,8 +61,8 @@ io.on("connection", function (socket) {
   console.log("A user connected.");
 
   // locals
-  var username;
-  var room;
+  const username;
+  const room;
 
   // disconnect
   socket.on("disconnect", function () {
@@ -93,8 +93,8 @@ io.on("connection", function (socket) {
 
   // requestuser event
   socket.on("requestuser", function (args) {
-    var requested_username = args[0];
-    var requested_room = args[1];
+    const requested_username = args[0];
+    const requested_room = args[1];
     console.log("A user requested sign up: " + requested_username);
     if (!isUsernameAvailable(requested_username)) {
       console.log("Username taken.");
@@ -124,10 +124,10 @@ io.on("connection", function (socket) {
 
   // assign roles event
   socket.on("assignroles", function () {
-    var chameleonIndex = getRandomChoice(rooms[room].length);
-    var chameleonName = rooms[room][chameleonIndex];
-    var wordIndex = getRandomChoice(active_grids[room].length);
-    var word = active_grids[room][wordIndex];
+    const chameleonIndex = getRandomChoice(rooms[room].length);
+    const chameleonName = rooms[room][chameleonIndex];
+    const wordIndex = getRandomChoice(active_grids[room].length);
+    const word = active_grids[room][wordIndex];
     io.in(room).emit("giveassigment", [word, chameleonName]);
   });
 });
