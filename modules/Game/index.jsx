@@ -1,143 +1,146 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import fetch from "isomorphic-unfetch";
-import useSocket from "../hooks/useSocket";
-import "game.css";
+import React, { useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Link from 'next/link';
+import fetch from 'isomorphic-unfetch';
+import useSocket from '../../hooks/useSocket';
+import 'game.css';
 
-const Game = (props) => {
+const Game = () => {
+  const [name, setName] = useState('');
   // const [field, setField] = useState("");
   // const [newMessage, setNewMessage] = useState(0);
   // const [messages, setMessages] = useState(props.messages || []);
 
-  // const socket = useSocket("message.chat1", (message) => {
-  //   setMessages((messages) => [...messages, message]);
-  // });
+  const socket = useSocket('acceptuser', (message) => {
+    const username = message[0];
+    const room = message[1];
+    // $('#login-div').hide();
+    // $('#game-div').show();
+    // $('#room-indicator').html('<strong>You are in room: ' + room + '</strong>');
+  });
 
   // useSocket("message.chat2", () => {
   //   setNewMessage((newMessage) => newMessage + 1);
   // });
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
+  const handleSubmit = (name) => {
+    // create message object
+    const message = {
+      id: new Date().getTime(),
+      value: field,
+    };
 
-  //   // create message object
-  //   const message = {
-  //     id: new Date().getTime(),
-  //     value: field,
-  //   };
-
-  //   // send object to WS server
-  //   socket.emit("message.chat1", message);
-  //   setField("");
-  //   setMessages((messages) => [...messages, message]);
-  // };
+    // send object to WS server
+    socket.emit('message.chat1', message);
+    setField('');
+    setMessages((messages) => [...messages, message]);
+  };
 
   return (
-    <>
-      <div class="container">
-        <div id="title-div" class="row">
-          <div class="col-12">
-            <h1 id="title">Chameleon</h1>
-            <img src="/chameleon.png" id="logo" />
-          </div>
+    <Container>
+      <Row id="title-div">
+        <div class="col-12">
+          <h1 id="title">Chameleon</h1>
+          <img src="/chameleon.png" id="logo" />
         </div>
+      </Row>
 
-        {/* <!-- game div --> */}
-        <div id="game-div">
-          <hr />
-          <div class="row">
-            <div class="col-12" id="room-indicator"></div>
-            <div class="col-12" id="user-indicator"></div>
-            <div class="col-12">
-              <button id="leave" class="box">
-                Leave room
-              </button>
-            </div>
+      {/* <!-- game div --> */}
+      <div id="game-div">
+        <hr />
+        <Row>
+          <div class="col-12" id="room-indicator"></div>
+          <div class="col-12" id="user-indicator"></div>
+          <div class="col-12">
+            <button id="leave" class="box">
+              Leave room
+            </button>
           </div>
-          <hr />
-          <div class="row controls">
-            <div class="col-6">
-              <button id="change-grid" class="box">
-                Reset grid
-              </button>
-            </div>
-            <div class="col-6">
-              <button id="assign-roles" class="box">
-                Assign roles
-              </button>
-            </div>
+        </Row>
+        <hr />
+        <Row class="controls">
+          <div class="col-6">
+            <button id="change-grid" class="box">
+              Reset grid
+            </button>
           </div>
-          <hr />
-          <div class="row">
-            <div class="col-6" id="roleholder">
-              <strong id="role">Role unassigned</strong>
-            </div>
-            <div class="col-6">
-              <button id="hide-role" class="box">
-                Toggle
-              </button>
-            </div>
+          <div class="col-6">
+            <button id="assign-roles" class="box">
+              Assign roles
+            </button>
           </div>
-          <hr />
-          <div class="row">
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
-            <div class="col-6">
-              <div class="box grid-item"></div>
-            </div>
+        </Row>
+        <hr />
+        <Row>
+          <div class="col-6" id="roleholder">
+            <strong id="role">Role unassigned</strong>
           </div>
-        </div>
+          <div class="col-6">
+            <button id="hide-role" class="box">
+              Toggle
+            </button>
+          </div>
+        </Row>
+        <hr />
+        <Row>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+          <div class="col-6">
+            <div class="box grid-item"></div>
+          </div>
+        </Row>
       </div>
-    </>
+    </Container>
   );
 };
 

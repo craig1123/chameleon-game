@@ -1,0 +1,17 @@
+$blue: rgb(51, 115, 152);
+$black: #17181a;
+$green: rgb(129, 186, 122);
+$yellow: rgb(227, 226, 108);
+
+$colors: (
+  'blue': $blue,
+  'green': $green,
+  'yellow': $yellow,
+);
+
+$theme-colors: (
+  'primary': $blue,
+);
+
+/* import bootstrap to set changes */
+@import '~bootstrap/scss/bootstrap';

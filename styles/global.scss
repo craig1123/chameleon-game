@@ -1,9 +1,4 @@
-:root {
-  --black: #17181a;
-  --green: rgb(129, 186, 122);
-  --yellow: rgb(227, 226, 108);
-  --blue: rgb(51, 115, 152);
-}
+@import 'custom';
 
 *,
 *:before,
@@ -14,7 +9,7 @@
 
 body,
 html {
-  color: var(--black);
+  color: $black;
   height: 100%;
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
@@ -41,20 +36,6 @@ hr {
 
 button {
   background-color: #d9d9d9;
-}
-
-.col-12 {
-  padding: 0.2rem;
-  border: 0;
-  margin: 0;
-  text-align: center;
-}
-
-.col-6 {
-  padding: 0.2rem;
-  border: 0;
-  margin: 0;
-  text-align: center;
 }
 
 .box {
