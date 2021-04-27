@@ -1,0 +1,55 @@
+:root {
+  --green: rgb(129, 186, 122);
+  --yellow: rgb(227, 226, 108);
+  --blue: rgb(51, 115, 152);
+}
+
+html {
+  background-color: var(--green);
+}
+
+body {
+  width: 800px;
+  color: black;
+  max-width: 95%;
+  padding: 1rem;
+  margin: 1rem auto;
+  border: 0.5rem solid black;
+  font-family: "Roboto", sans-serif;
+  background-color: var(--yellow);
+}
+
+hr {
+  margin: 1rem 0;
+  padding: 0;
+  height: 0;
+  border: 0.05rem solid black;
+}
+
+button {
+  background-color: #d9d9d9;
+}
+
+.col-12 {
+  padding: 0.2rem;
+  border: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.col-6 {
+  padding: 0.2rem;
+  border: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.box {
+  padding: 0;
+  margin: 0;
+  border: 0.1rem solid black;
+  border-radius: 0.1rem;
+  width: 100%;
+  max-width: 30rem;
+  text-align: center;
+}

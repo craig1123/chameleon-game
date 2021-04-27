@@ -1,0 +1,23 @@
+#title {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 2rem;
+  font-family: "Permanent Marker", cursive;
+}
+
+#logo {
+  height: 3rem;
+}
+
+#title-div {
+  margin-top: 1rem;
+}
+
+#warn {
+  color: red;
+  font-style: italic;
+}
+
+.grid-item {
+  background-color: white;
+}
