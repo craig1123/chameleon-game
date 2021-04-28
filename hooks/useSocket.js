@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
-import io from 'socket.io-client';
 
-const socket = io();
-
-export default function useSocket(eventName, cb) {
+export default function useSocket(socket, eventName, cb) {
   useEffect(() => {
+    if (!socket) {
+      return () => {};
+    }
+
     socket.on(eventName, cb);
 
     return () => {
       socket.off(eventName, cb);
     };
-  }, [eventName, cb]);
+  }, [socket, eventName, cb]);
 
   return socket;
 }

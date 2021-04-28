@@ -13,8 +13,7 @@ const Login = ({ socket }) => {
     socket.emit('requestuser', name);
   };
 
-  // TODO: this creates multiple sockets
-  useSocket('signUpError', (error) => {
+  useSocket(socket, 'signUpError', (error) => {
     setErrorName(error);
   });
 

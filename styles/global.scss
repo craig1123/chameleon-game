@@ -3,7 +3,6 @@
 body,
 html {
   color: $black;
-  height: 100%;
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
@@ -17,7 +16,9 @@ body {
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
   font-size: 16px;
-  background-color: var(--green);
+  background: repeating-conic-gradient($green 0% 25%, $yellow 0% 50%) 50% / 20px 20px;
+  border: 10px $yellow solid;
+  height: 100vh;
 }
 
 hr {
@@ -27,12 +28,36 @@ hr {
   border: 0.05rem solid black;
 }
 
-.box {
-  padding: 0;
-  margin: 0;
-  border: 0.1rem solid black;
-  border-radius: 0.1rem;
+h1,
+h2 {
+  font-family: 'Permanent Marker', cursive;
+}
+
+.footer {
+  position: absolute;
+  bottom: 20px;
   width: 100%;
-  max-width: 30rem;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+
+  @media (min-width: $tablet) {
+    display: block;
+    width: auto;
+    bottom: 50px;
+    right: 40px;
+  }
+
+  .inner-footer {
+    color: $blue;
+    display: flex;
+    text-shadow: -2px 0px #fff;
+  }
+
+  .footer-words {
+    margin-left: 12px;
+  }
+
+  h1 {
+    margin-bottom: 0;
+  }
 }

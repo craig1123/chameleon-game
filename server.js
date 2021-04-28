@@ -86,7 +86,7 @@ function randomGrid() {
 // ======================
 
 io.on('connection', function (socket) {
-  console.log('A user connected.');
+  socket.emit('connected', { usersOnline: users.length, connected: true });
 
   // locals
   let username;
@@ -134,7 +134,6 @@ io.on('connection', function (socket) {
 
     username = requestedUsername;
     users.push(username);
-    console.log(users);
     socket.emit('acceptuser', { username, usersOnline: users.length, rooms });
   });
 

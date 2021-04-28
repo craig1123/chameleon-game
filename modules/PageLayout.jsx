@@ -1,9 +1,11 @@
-import React from "react";
-import Head from "next/head";
+import React from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
+import useIsMobile from '../hooks/useIsMobile';
 
-const defaultTitle = "Play Chameleon Online!";
+const defaultTitle = 'Play Chameleon Online!';
 const defaultDescription = `This is a completely free online version of the popular board game - "The Chameleon". The platform offers a seamless playing experience on desktop as well as on mobile devices and is perfect for both eye-to-eye and over-the-internet game sessions.`;
-const baseUrl = "https://chameleon.vercel.com";
+const baseUrl = 'https://chameleon.vercel.com';
 
 // interface Props {
 //   description?: string;
@@ -16,12 +18,13 @@ const baseUrl = "https://chameleon.vercel.com";
 
 const Layout = ({
   children,
-  title = "",
+  title = '',
   description = defaultDescription,
-  ogImage = "",
-  googleSiteVerification = "",
-  url = "",
+  ogImage = '',
+  googleSiteVerification = '',
+  url = '',
 }) => {
+  const isMobile = useIsMobile();
   const finalTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
   const finalUrl = `${baseUrl}${url}`;
   return (
@@ -47,14 +50,23 @@ const Layout = ({
         <meta property="twitter:description" content={description} />
         <meta property="twitter:image" content={ogImage} />
         {/* other */}
-        {googleSiteVerification && (
-          <meta
-            name="google-site-verification"
-            content={googleSiteVerification}
-          />
-        )}
+        {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
       </Head>
       <main>{children}</main>
+      <footer className="footer">
+        <div className="inner-footer">
+          <Image
+            height={isMobile ? '100px' : '128px'}
+            width={isMobile ? '100px' : '128px'}
+            src="/chameleon_blue.png"
+            quality="100"
+          />
+          <div className="footer-words">
+            <h1>Chameleon</h1>
+            <h2>Blend In</h2>
+          </div>
+        </div>
+      </footer>
     </>
   );
 };
