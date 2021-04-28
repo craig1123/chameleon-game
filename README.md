@@ -4,35 +4,46 @@ Blend in and don't get caught
 
 ## Developing
 
-### Using `create-next-app`
-
-Execute [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app) with [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) or [npx](https://github.com/zkat/npx#readme) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-socket.io with-socket.io-app
-# or
-yarn create next-app --example with-socket.io with-socket.io-app
-```
-
-### Download manually
-
-Download the example:
-
-```bash
-curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=2 next.js-canary/examples/with-socket.io
-cd with-socket.io
-```
-
 Install it and run:
 
 ```bash
-npm install
-npm run dev
-# or
 yarn
 yarn dev
 ```
 
-## The idea behind the example
+## ToDO
 
-This example shows how to use [socket.io](https://socket.io/) inside a Next.js application using a custom hook. The example combines the WebSocket server with the Next server. In a production application you should consider splitting them into different services.
+meta stuff
+
+- favicon
+- design, landing
+- made by ...
+
+Lobby
+
+- Show list of active rooms
+  - differenciate between full and non full rooms (later)
+- Host new game
+  - setup wizard? show preferences?
+
+GamePlay
+
+- design
+  - build grid
+  - most votes
+  - chameleon reveal
+  - select a new wordlist/grid
+- host start game once there's more than 2 players
+- assign chameleon role
+- assign a key word
+- players type in their clue
+  - preferences option for chameleon to see two people's clues
+- players check Clue ready
+- players cast their vote for the chameleon. Once all votes are in, the chameleon is revealed.
+- Scoring
+  - if the chameleon escapes undetected: chameleon - 2pts, everyone else - 0pts
+    - preferences option to gain 1pt if you guessed the chameleon correctly
+  - if the chameleon is caught, but guesses correctly: chameleon - 1pts, everyone else - 0pts
+  - if the chameleon is caught and doesn't guess the secret word: chameleon - 0pts, everyone else - 2pts (preferences option for 1pt)
+- First person to 5 wins!
+- Restart games

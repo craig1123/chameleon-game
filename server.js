@@ -19,17 +19,32 @@ const nextHandler = nextApp.getRequestHandler();
 const MAX_PLAYERS = 10;
 // an array of all users
 const users = [];
-// user by room
+// active rooms
 const rooms = {};
-// {
-//   host: Username,
-//   players: Username[],
-//   grid: string[],
-//   gridTitle: string,
+// id: {
+//   host: username,
+//   players: {
+//     [userName]: points (number)
+//   },
+//   inProgress: boolean
 //   full: boolean
 // }
+
 // grid by room
 const active_grids = {};
+// roomId: {
+//   grid: string,
+//   gridTitle: string,
+//   keyWord: string,
+//   chameleon: username,
+//   players: {
+//     [username]: {
+//       clue: string,
+//       clueReady: boolean,
+//       vote: string,
+//     },
+//   },
+// };
 
 // array of grid titles
 const gridTitles = Object.keys(wordSheet) || [];
@@ -134,7 +149,7 @@ io.on('connection', function (socket) {
       };
       active_grids[room] = newGrid.grid;
     } else if (rooms[room].players.length >= MAX_PLAYERS) {
-      socket.emit('roomfull', active_grids[room]);
+      socket.emit('roomfull', rooms[room]);
       return;
     } else {
       rooms[room].players.push(username);
