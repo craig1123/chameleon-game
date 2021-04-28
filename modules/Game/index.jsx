@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -7,7 +7,13 @@ import Row from 'react-bootstrap/Row';
 
 const Game = () => {
   const router = useRouter();
-  console.log(router);
+
+  useEffect(() => {
+    // TODO: redirect if room doesn't exist
+    if (router.isReady && !router.query.roomId) {
+      router.redirect('/');
+    }
+  }, [router]);
   // const [metaState, setMetaState] = useState(() => ({}));
   // const { username, usersOnline, rooms } = metaState;
 
@@ -18,7 +24,7 @@ const Game = () => {
   return (
     <Container>
       <Row id="title-div">
-        <div class="col-12">
+        <div className="col-12">
           <h1 id="title">Chameleon</h1>
           <img src="/chameleon.png" id="logo" />
         </div>
@@ -28,93 +34,93 @@ const Game = () => {
       <div id="game-div">
         <hr />
         <Row>
-          <div class="col-12" id="room-indicator"></div>
-          <div class="col-12" id="user-indicator"></div>
-          <div class="col-12">
-            <button id="leave" class="box">
+          <div className="col-12" id="room-indicator"></div>
+          <div className="col-12" id="user-indicator"></div>
+          <div className="col-12">
+            <button id="leave" className="box">
               Leave room
             </button>
           </div>
         </Row>
         <hr />
-        <Row class="controls">
-          <div class="col-6">
-            <button id="change-grid" class="box">
+        <Row className="controls">
+          <div className="col-6">
+            <button id="change-grid" className="box">
               Reset grid
             </button>
           </div>
-          <div class="col-6">
-            <button id="assign-roles" class="box">
+          <div className="col-6">
+            <button id="assign-roles" className="box">
               Assign roles
             </button>
           </div>
         </Row>
         <hr />
         <Row>
-          <div class="col-6" id="roleholder">
+          <div className="col-6" id="roleholder">
             <strong id="role">Role unassigned</strong>
           </div>
-          <div class="col-6">
-            <button id="hide-role" class="box">
+          <div className="col-6">
+            <button id="hide-role" className="box">
               Toggle
             </button>
           </div>
         </Row>
         <hr />
         <Row>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
-          <div class="col-6">
-            <div class="box grid-item"></div>
+          <div className="col-6">
+            <div className="box grid-item"></div>
           </div>
         </Row>
       </div>

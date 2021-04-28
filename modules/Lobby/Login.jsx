@@ -20,19 +20,19 @@ const Login = ({ socket }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group controlId="login-name">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>Username</Form.Label>
         <Form.Control
           value={name}
           onChange={(e) => setName(e.target.value)}
           type="text"
           size="lg"
           required
-          placeholder="Enter a name"
+          placeholder="Please provide a name"
         />
         {errorName && <Form.Text>{errorName}</Form.Text>}
       </Form.Group>
       <Button type="submit" variant="primary" size="large">
-        See Games
+        Enter Lobby
       </Button>
     </Form>
   );

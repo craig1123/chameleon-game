@@ -53,6 +53,7 @@ const Layout = ({
         {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
       </Head>
       <main>{children}</main>
+      <div className="footer-height" />
       <footer className="footer">
         <div className="inner-footer">
           <Image

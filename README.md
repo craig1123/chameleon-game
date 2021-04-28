@@ -15,16 +15,12 @@ yarn dev
 
 meta stuff
 
-- favicon
-- design, landing
 - made by ...
 
 Lobby
 
-- Show list of active rooms
-  - differenciate between full and non full rooms (later)
 - Host new game
-  - setup wizard? show preferences?
+  - setup wizard? show preferences? Maybe should be on the game page
 
 GamePlay
 

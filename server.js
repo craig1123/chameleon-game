@@ -11,7 +11,65 @@ const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 const nextHandler = nextApp.getRequestHandler();
-
+const fakeRooms = {
+  fakeRoom1: {
+    host: 'poop',
+    players: {
+      poop: 0,
+      stinky: 0,
+      silly: 0,
+      wormy: 0,
+    },
+    inProgress: false,
+    full: false,
+  },
+  fakeRoom2: {
+    host: 'eli',
+    players: {
+      eli: 2,
+      atlas: 2,
+      mommy: 2,
+      daddy: 2,
+    },
+    inProgress: true,
+    full: false,
+  },
+  fakeRoom3: {
+    host: 'a',
+    players: {
+      a: 1,
+      b: 0,
+      c: 4,
+      d: 0,
+      e: 2,
+      f: 0,
+      g: 0,
+      h: 3,
+      i: 0,
+      j: 0,
+    },
+    inProgress: true,
+    full: true,
+  },
+  fakeRoom4: {
+    host: 'me',
+    players: {
+      me: 0,
+      you: 0,
+    },
+    inProgress: false,
+    full: false,
+  },
+  fakeRoom5: {
+    host: 'me',
+    players: {
+      me: 0,
+      you: 0,
+    },
+    inProgress: false,
+    full: false,
+  },
+};
 // fake DB - probably don't need a db
 // ======
 // globals
@@ -20,7 +78,7 @@ const MAX_PLAYERS = 10;
 // an array of all users
 const users = [];
 // active rooms
-const rooms = {};
+const rooms = dev ? fakeRooms : {};
 // roomId: {
 //   host: username,
 //   players: {
@@ -86,7 +144,7 @@ function randomGrid() {
 // ======================
 
 io.on('connection', function (socket) {
-  socket.emit('connected', { usersOnline: users.length, connected: true });
+  socket.emit('connected', { playersOnline: users.length, connected: true });
 
   // locals
   let username;
@@ -134,7 +192,7 @@ io.on('connection', function (socket) {
 
     username = requestedUsername;
     users.push(username);
-    socket.emit('acceptuser', { username, usersOnline: users.length, rooms });
+    socket.emit('acceptuser', { username, playersOnline: users.length, rooms });
   });
 
   socket.on('requestroom', function (args) {

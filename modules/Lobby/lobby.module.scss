@@ -2,6 +2,12 @@
 
 $header-height: 55px;
 
+.login-wrapper {
+  background-color: $yellow;
+  margin-top: 50px;
+  padding: 20px;
+}
+
 .header-fill {
   height: $header-height;
 }
@@ -56,21 +62,8 @@ $header-height: 55px;
   height: 12px;
 }
 
-.title {
-  display: inline-block;
-  margin-right: 0.5rem;
-  font-size: 2rem;
-  font-family: 'Permanent Marker', cursive;
-}
-
-.logo {
-  height: 3rem;
-}
-
-.title-div {
-  margin-top: 1rem;
-}
-
-.grid-item {
-  background-color: white;
+.grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }

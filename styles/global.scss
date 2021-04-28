@@ -17,8 +17,11 @@ body {
   -webkit-tap-highlight-color: transparent;
   font-size: 16px;
   background: repeating-conic-gradient($green 0% 25%, $yellow 0% 50%) 50% / 20px 20px;
-  border: 10px $yellow solid;
-  height: 100vh;
+  min-height: 100vh;
+
+  @media (min-width: $tablet) {
+    border: 10px $yellow solid;
+  }
 }
 
 hr {
@@ -33,15 +36,23 @@ h2 {
   font-family: 'Permanent Marker', cursive;
 }
 
+.footer-height {
+  @media (min-width: $tablet) {
+    height: 150px;
+  }
+}
+
 .footer {
-  position: absolute;
-  bottom: 20px;
+  height: 120px;
   width: 100%;
   display: flex;
   justify-content: center;
+  z-index: -1;
 
   @media (min-width: $tablet) {
     display: block;
+    position: absolute;
+    height: 150px;
     width: auto;
     bottom: 50px;
     right: 40px;
