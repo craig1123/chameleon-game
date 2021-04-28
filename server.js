@@ -21,7 +21,7 @@ const MAX_PLAYERS = 10;
 const users = [];
 // active rooms
 const rooms = {};
-// id: {
+// roomId: {
 //   host: username,
 //   players: {
 //     [userName]: points (number)
@@ -89,95 +89,98 @@ io.on('connection', function (socket) {
   console.log('A user connected.');
 
   // locals
-  const username;
-  const room;
+  let username;
+  let roomId;
 
   // exit room
   function exit() {
-    socket.to(room).emit('updateonline', rooms[room]);
-    socket.leave(room);
+    socket.to(roomId).emit('updateonline', rooms[roomId]);
+    socket.leave(roomId);
 
-    if (rooms[room] && rooms[room].players.length === 0) {
-      delete rooms[room];
-      delete active_grids[room];
+    if (rooms[roomId] && rooms[roomId].players.length === 0) {
+      delete rooms[roomId];
+      delete active_grids[roomId];
     }
 
     username = undefined;
-    room = undefined;
+    roomId = undefined;
   }
 
   // disconnect
   socket.on('disconnect', function () {
-    if (username !== undefined && room !== undefined) {
+    console.log('A user is leaving: ' + username);
+    if (username !== undefined) {
       removeUser(username, users);
-      removeUser(username, rooms[room]);
+    }
+    if (username !== undefined && roomId !== undefined) {
+      removeUser(username, rooms[roomId]);
       exit();
     }
   });
 
   // leaveroom event
   socket.on('leaveroom', function () {
-    removeUser(username, rooms[room]);
+    removeUser(username, rooms[roomId]);
     exit();
   });
 
-  socket.on('requestuser', function (args) {
-    const requested_username = args[0];
-    console.log('A user requested sign up: ' + requested_username);
+  socket.on('requestuser', function (requestedUsername) {
+    console.log('A user requested sign up: ' + requestedUsername);
 
-    if (!userNameExists(requested_username)) {
-      socket.emit('usernametaken');
+    if (userNameExists(requestedUsername)) {
+      socket.emit('signUpError', 'The name you selected is already taken');
       return;
     }
 
-    username = requested_username;
+    username = requestedUsername;
     users.push(username);
-    socket.emit('acceptuser', [username, users.length]);
+    console.log(users);
+    socket.emit('acceptuser', { username, usersOnline: users.length, rooms });
   });
 
   socket.on('requestroom', function (args) {
-    const requested_room = args[0];
-    room = requested_room;
+    const requestedRoom = args[0];
+    roomId = requestedRoom;
 
-    if (rooms[room] === undefined) {
+    if (rooms[roomId] === undefined) {
       const newGrid = randomGrid();
-      rooms[room] = {
+      rooms[roomId] = {
         host: username,
         players: [username],
         grid: newGrid.grid,
         gridTitle: newGrid.gridTitle,
       };
-      active_grids[room] = newGrid.grid;
-    } else if (rooms[room].players.length >= MAX_PLAYERS) {
-      socket.emit('roomfull', rooms[room]);
+      active_grids[roomId] = newGrid.grid;
+    } else if (rooms[roomId].players.length >= MAX_PLAYERS) {
+      socket.emit('roomfull', rooms[roomId]);
       return;
     } else {
-      rooms[room].players.push(username);
-      if (rooms[room].players.length === MAX_PLAYERS) {
-        rooms[room].full = true;
+      rooms[roomId].players.push(username);
+      if (rooms[roomId].players.length === MAX_PLAYERS) {
+        rooms[roomId].full = true;
       }
     }
 
-    socket.join(room);
-    io.in(room).emit('updateonline', rooms[room]);
-    socket.emit('deploygrid', active_grids[room]);
+    socket.join(roomId);
+    io.in(roomId).emit('updateonline', rooms[roomId]);
+    socket.emit('deploygrid', active_grids[roomId]);
   });
 
   // changegrid event
   socket.on('changegrid', function () {
     const newGrid = randomGrid();
-    active_grids[room].grid = newGrid.grid;
-    active_grids[room].gridTitle = newGrid.gridTitle;
-    io.in(room).emit('deploygrid', active_grids[room]);
+    active_grids[roomId].grid = newGrid.grid;
+    active_grids[roomId].gridTitle = newGrid.gridTitle;
+    io.in(roomId).emit('deploygrid', active_grids[roomId]);
   });
 
   // assign roles event
   socket.on('assignroles', function () {
-    const chameleonIndex = getRandomChoice(rooms[room].length);
-    const chameleonName = rooms[room][chameleonIndex];
-    const wordIndex = getRandomChoice(active_grids[room].length);
-    const word = active_grids[room][wordIndex];
-    io.in(room).emit('giveassigment', [word, chameleonName]);
+    const chameleonIndex = getRandomChoice(rooms[roomId].length);
+    const chameleonName = rooms[roomId][chameleonIndex];
+    const wordIndex = getRandomChoice(active_grids[roomId].length);
+    const word = active_grids[roomId][wordIndex];
+    io.in(roomId).emit('giveassigment', [word, chameleonName]);
   });
 });
 

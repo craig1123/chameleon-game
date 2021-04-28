@@ -1,12 +1,5 @@
 @import 'custom';
 
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-  outline: none;
-}
-
 body,
 html {
   color: $black;
@@ -17,12 +10,12 @@ html {
   width: 100%;
 }
 
-html {
+body {
   -ms-text-size-adjust: 100%; /* 2 */
   -webkit-text-size-adjust: 100%; /* 2 */
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
-  -webkit-tap-highlight-color: $transparent;
+  -webkit-tap-highlight-color: transparent;
   font-size: 16px;
   background-color: var(--green);
 }
@@ -32,10 +25,6 @@ hr {
   padding: 0;
   height: 0;
   border: 0.05rem solid black;
-}
-
-button {
-  background-color: #d9d9d9;
 }
 
 .box {

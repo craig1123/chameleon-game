@@ -1,4 +1,4 @@
-export default {
+const wordSheet = {
   Artists: [
     'Damien Hirst',
     'Salvador Dali',
@@ -808,3 +808,5 @@ export default {
     'Gorilla',
   ],
 };
+
+module.exports = wordSheet;

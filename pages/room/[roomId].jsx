@@ -1,13 +1,14 @@
 import React from 'react';
 import PageLayout from '../modules/PageLayout';
-import Lobby from '../modules/Lobby';
+import Game from '../modules/Game';
 
-const Home = () => {
+const RoomId = (props) => {
+  console.log(props);
   return (
     <PageLayout>
-      <Lobby />
+      <Game />
     </PageLayout>
   );
 };
 
-export default Home;
+export default RoomId;

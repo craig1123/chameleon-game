@@ -1,38 +1,19 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
-import useSocket from '../../hooks/useSocket';
-import 'game.css';
+// import useSocket from '../../hooks/useSocket';
+// import './game.scss';
 
 const Game = () => {
-  const [name, setName] = useState('');
-  // const [field, setField] = useState("");
-  // const [newMessage, setNewMessage] = useState(0);
-  // const [messages, setMessages] = useState(props.messages || []);
+  const router = useRouter();
+  console.log(router);
+  // const [metaState, setMetaState] = useState(() => ({}));
+  // const { username, usersOnline, rooms } = metaState;
 
-  const socket = useSocket('acceptuser', (message) => {
-    const username = message[0];
-    localStorage.setItem('userName', username);
-  });
-
-  // useSocket("message.chat2", () => {
-  //   setNewMessage((newMessage) => newMessage + 1);
+  // const socket = useSocket('acceptuser', (userState) => {
+  //   setMetaState((prev) => ({ ...prev, ...userState }));
   // });
-
-  const handleSubmit = (name) => {
-    // create message object
-    const message = {
-      id: new Date().getTime(),
-      value: field,
-    };
-
-    // send object to WS server
-    socket.emit('message.chat1', message);
-    setField('');
-    setMessages((messages) => [...messages, message]);
-  };
 
   return (
     <Container>
@@ -140,12 +121,5 @@ const Game = () => {
     </Container>
   );
 };
-
-// Game.getInitialProps = async () => {
-//   const response = await fetch("http://localhost:3000/messages/chat1");
-//   const messages = await response.json();
-
-//   return { messages };
-// };
 
 export default Game;
