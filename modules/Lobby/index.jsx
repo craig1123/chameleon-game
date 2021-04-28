@@ -25,6 +25,7 @@ const Lobby = () => {
     <Row className={styles['title-div']}>
       <Col sm={6} md={4}>
         <h1 className="title">Chameleon</h1>
+        {usersOnline && <p>Users Online: {usersOnline}</p>}
       </Col>
       <Col sm={6}>
         <Image height="128" width="128" src="/chameleon.png" className="logo" />
@@ -48,6 +49,7 @@ const Lobby = () => {
     <Container>
       {heading}
       <hr />
+      <h4>Username: {username}</h4>
       {roomsArray.length > 0 ? (
         <CardColumns>
           {roomsArray.map((roomId) => {
