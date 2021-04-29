@@ -1,11 +1,11 @@
 import React from 'react';
 import PageLayout from '../modules/PageLayout';
-import Lobby from '../modules/Lobby';
+import Login from '../modules/Login';
 
 const Home = (props) => {
   return (
     <PageLayout>
-      <Lobby {...props} />
+      <Login {...props} />
     </PageLayout>
   );
 };

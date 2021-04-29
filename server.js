@@ -108,17 +108,21 @@ io.on('connection', function (socket) {
     roomId = undefined;
   }
 
-  // disconnect
-  socket.on('disconnect', function () {
+  function removePlayer() {
     console.log('A user is leaving: ' + username);
     if (username !== undefined) {
       removeUser(username, users);
+      username = undefined;
     }
     if (username !== undefined && roomId !== undefined) {
       removeUser(username, rooms[roomId]);
       exit();
     }
-  });
+  }
+
+  // disconnect
+  socket.on('removePlayer', removePlayer);
+  socket.on('disconnect', removePlayer);
 
   // leaveroom event
   socket.on('leaveroom', function () {
@@ -186,9 +190,13 @@ io.on('connection', function (socket) {
 });
 
 nextApp.prepare().then(() => {
-  // app.get("/messages/:chat", (req, res) => {
-  //   res.json(messages[req.params.chat]);
-  // });
+  app.get('/rooms', (req, res) => {
+    res.json(rooms);
+  });
+
+  app.get('/room/:room', (req, res) => {
+    res.json(rooms[req.params.room]);
+  });
 
   app.get('*', (req, res) => {
     return nextHandler(req, res);

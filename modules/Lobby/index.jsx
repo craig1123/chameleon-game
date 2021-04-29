@@ -1,36 +1,25 @@
-import React, { useState, Fragment } from 'react';
-import Link from 'next/link';
+import React, { useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Card from 'react-bootstrap/Card';
 import useSocket from '../../hooks/useSocket';
-import Login from './Login';
 import Room from './Room';
 
 import styles from './lobby.module.scss';
+import { usePlayer } from '../../context/player';
 
-const Lobby = ({ socket }) => {
-  const [metaState, setMetaState] = useState(() => ({ connected: false, playersOnline: 0 }));
-  const { username, playersOnline, rooms, connected } = metaState;
+const Lobby = ({ socket, rooms }) => {
+  const { playerState } = usePlayer();
+  const { username, playersOnline, connected } = playerState;
 
-  useSocket(socket, 'acceptuser', (userState) => {
-    localStorage.setItem('userName', JSON.stringify(userState.username));
-    setMetaState((prev) => ({ ...prev, ...userState }));
-  });
+  useEffect(() => {
+    if (socket && playersOnline === 0) {
+      socket.emit('requestuser', username);
+    }
+  }, [socket, username, playersOnline]);
 
-  useSocket(socket, 'connected', (userState) => {
-    setMetaState((prev) => ({ ...prev, ...userState }));
-  });
+  // TODO: get all rooms here.
 
-  if (!username) {
-    return (
-      <Container className={styles['login-wrapper']}>
-        <Login socket={socket} />
-      </Container>
-    );
-  }
-
-  const roomsArray = Object.keys(rooms);
+  const roomsArray = rooms ? Object.keys(rooms) : [];
 
   return (
     <>
@@ -46,7 +35,7 @@ const Lobby = ({ socket }) => {
         </div>
       </header>
       <Container>
-        <h4>Username: {username}</h4>
+        <h4>Username: {username || playerName}</h4>
         {roomsArray.length > 0 ? (
           <div className={styles.grid}>
             {/* TODO: split up active games with games waiting */}

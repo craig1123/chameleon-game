@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/global.scss';
+import { PlayerProvider } from '../context/player';
 
 const MyApp = ({ pageProps, Component }) => {
   const [socket, setSocket] = useState(null);
@@ -16,7 +16,11 @@ const MyApp = ({ pageProps, Component }) => {
     };
   }, []);
 
-  return <Component {...pageProps} socket={socket} />;
+  return (
+    <PlayerProvider socket={socket}>
+      <Component {...pageProps} socket={socket} />
+    </PlayerProvider>
+  );
 };
 
 export default MyApp;
