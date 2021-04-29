@@ -2,16 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-// import useSocket from '../../hooks/useSocket';
+import useSocket from '../../hooks/useSocket';
 // import './game.scss';
 
-const Game = () => {
+const Game = ({ socket }) => {
   const router = useRouter();
+  const [metaState, setMetaState] = useState(() => ({ connected: false }));
+  const [roomState, setRoomState] = useState(() => ({ connected: false }));
+  console.log(metaState);
+
+  useSocket(socket, 'connected', (userState) => {
+    setMetaState((prev) => ({ ...prev, ...userState }));
+  });
+
+  useSocket(socket, 'updateonline', (userState) => {
+    setMetaState((prev) => ({ ...prev, ...userState }));
+  });
 
   useEffect(() => {
     // TODO: redirect if room doesn't exist
-    if (router.isReady && !router.query.roomId) {
-      router.redirect('/');
+    if (router.isReady && router.query.roomId) {
+      // router.redirect('/');
     }
   }, [router]);
   // const [metaState, setMetaState] = useState(() => ({}));

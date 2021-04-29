@@ -3,9 +3,9 @@ import Link from 'next/link';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import CardColumns from 'react-bootstrap/CardColumns';
 import useSocket from '../../hooks/useSocket';
 import Login from './Login';
+import Room from './Room';
 
 import styles from './lobby.module.scss';
 
@@ -51,27 +51,7 @@ const Lobby = ({ socket }) => {
           <div className={styles.grid}>
             {/* TODO: split up active games with games waiting */}
             {roomsArray.map((roomId, i) => {
-              const room = rooms[roomId];
-              const { host, full, inProgress, players } = room;
-              return (
-                <Card
-                  bg={'primary'}
-                  key={roomId}
-                  style={{ width: '18rem', margin: '20px 10px', color: 'white' }}
-                  className="mb-2"
-                >
-                  <Card.Header>Host: {host}</Card.Header>
-                  <Card.Body>
-                    <Card.Text>Players: {Object.keys(players).join(', ')}</Card.Text>
-                    <Card.Text>Status: {full ? 'Full' : inProgress ? 'In Progress' : 'Waiting'}</Card.Text>
-                    {full || inProgress ? null : (
-                      <Link href={`/room/${roomId}`}>
-                        <Button variant="secondary">Join Game</Button>
-                      </Link>
-                    )}
-                  </Card.Body>
-                </Card>
-              );
+              return <Room key={roomId} roomId={roomId} room={rooms[roomId]} />;
             })}
           </div>
         ) : (
