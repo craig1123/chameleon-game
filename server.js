@@ -3,6 +3,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const next = require('next');
 const wordSheet = require('./consts/wordSheet.js');
+const fakeRooms = require('./consts/fakeRooms.js');
 // const cluster = require('cluster');
 // const numCPUs = require('os').cpus().length;
 // for scaling if we need more CPU cores https://github.com/mars/heroku-nextjs-custom-server-express/blob/master/server.js
@@ -11,65 +12,7 @@ const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 const nextHandler = nextApp.getRequestHandler();
-const fakeRooms = {
-  fakeRoom1: {
-    host: 'poop',
-    players: {
-      poop: 0,
-      stinky: 0,
-      silly: 0,
-      wormy: 0,
-    },
-    inProgress: false,
-    full: false,
-  },
-  fakeRoom2: {
-    host: 'eli',
-    players: {
-      eli: 2,
-      atlas: 2,
-      mommy: 2,
-      daddy: 2,
-    },
-    inProgress: true,
-    full: false,
-  },
-  fakeRoom3: {
-    host: 'a',
-    players: {
-      a: 1,
-      b: 0,
-      c: 4,
-      d: 0,
-      e: 2,
-      f: 0,
-      g: 0,
-      h: 3,
-      i: 0,
-      j: 0,
-    },
-    inProgress: true,
-    full: true,
-  },
-  fakeRoom4: {
-    host: 'me',
-    players: {
-      me: 0,
-      you: 0,
-    },
-    inProgress: false,
-    full: false,
-  },
-  fakeRoom5: {
-    host: 'me',
-    players: {
-      me: 0,
-      you: 0,
-    },
-    inProgress: false,
-    full: false,
-  },
-};
+
 // fake DB - probably don't need a db
 // ======
 // globals
@@ -86,6 +29,7 @@ const rooms = dev ? fakeRooms : {};
 //   },
 //   inProgress: boolean
 //   full: boolean
+//   privateRoom: boolean
 // }
 
 // grid by room
@@ -164,17 +108,21 @@ io.on('connection', function (socket) {
     roomId = undefined;
   }
 
-  // disconnect
-  socket.on('disconnect', function () {
+  function removePlayer() {
     console.log('A user is leaving: ' + username);
     if (username !== undefined) {
       removeUser(username, users);
+      username = undefined;
     }
     if (username !== undefined && roomId !== undefined) {
       removeUser(username, rooms[roomId]);
       exit();
     }
-  });
+  }
+
+  // disconnect
+  socket.on('removePlayer', removePlayer);
+  socket.on('disconnect', removePlayer);
 
   // leaveroom event
   socket.on('leaveroom', function () {
@@ -242,9 +190,13 @@ io.on('connection', function (socket) {
 });
 
 nextApp.prepare().then(() => {
-  // app.get("/messages/:chat", (req, res) => {
-  //   res.json(messages[req.params.chat]);
-  // });
+  app.get('/rooms', (req, res) => {
+    res.json(rooms);
+  });
+
+  app.get('/room/:room', (req, res) => {
+    res.json(rooms[req.params.room]);
+  });
 
   app.get('*', (req, res) => {
     return nextHandler(req, res);
