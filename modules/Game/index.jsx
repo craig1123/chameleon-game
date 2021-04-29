@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Table from 'react-bootstrap/Table';
 import useSocket from '../../hooks/useSocket';
 // import './game.scss';
 
@@ -32,14 +33,44 @@ const Game = ({ socket }) => {
   //   setMetaState((prev) => ({ ...prev, ...userState }));
   // });
 
+  const leaveRoom = () => {
+    router.push('/lobby');
+  }
+
+  const isChameleon = false;
+  const letters = ['A', 'B', 'C', 'D'];
+  const gameColumns = [1, 2, 3, 4, 5, 6];
+  const gameRows = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
   return (
     <Container>
-      <Row id="title-div">
-        <div className="col-12">
-          <h1 id="title">Chameleon</h1>
-          <img src="/chameleon.png" id="logo" />
-        </div>
-      </Row>
+      {isChameleon ?
+        <Row id="title-div">
+          <div className="col-12">
+            <h1 id="title">You are the Chameleon</h1>
+            <img src="/chameleon.png" id="logo" />
+          </div>
+        </Row>
+        :
+        <Table bordered size="sm" variant="dark">
+          <thead>
+            <tr>
+              {gameColumns.map((col, i) => <th>{i + 1}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              gameRows.map(() => {
+                return (
+                  <tr>
+                    {gameColumns.map(() => <td>{`${letters[Math.floor(Math.random() * 3)]}${Math.floor(Math.random() * 4 + 1)}`}</td>)}
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+        </Table>
+      }
 
       {/* <!-- game div --> */}
       <div id="game-div">
@@ -48,7 +79,7 @@ const Game = ({ socket }) => {
           <div className="col-12" id="room-indicator"></div>
           <div className="col-12" id="user-indicator"></div>
           <div className="col-12">
-            <button id="leave" className="box">
+            <button onClick={leaveRoom} id="leave" className="box">
               Leave room
             </button>
           </div>

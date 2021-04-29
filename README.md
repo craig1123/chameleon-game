@@ -43,3 +43,6 @@ GamePlay
   - if the chameleon is caught and doesn't guess the secret word: chameleon - 0pts, everyone else - 2pts (preferences option for 1pt)
 - First person to 5 wins!
 - Restart games
+
+## How To Play
+https://www.youtube.com/watch?v=3IEEUcG0nSo

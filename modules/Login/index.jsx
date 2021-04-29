@@ -49,6 +49,7 @@ const Login = ({ socket }) => {
         <Button type="submit" variant="primary" size="large">
           Enter Lobby
         </Button>
+        <a href="https://www.youtube.com/watch?v=3IEEUcG0nSo" target="_blank" style={{ float: 'right' }}>How to play?</a>
       </Form>
       {/* Todo: put disclaimer below */}
     </Container>

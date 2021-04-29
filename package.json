@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
     "build": "next build",
+    "dev": "node server.js",
+    "lint": "eslint ./modules ./pages",
     "start": "NODE_ENV=production node server.js"
   },
   "engines": {
