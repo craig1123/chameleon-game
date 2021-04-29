@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import useSocket from '../../hooks/useSocket';
@@ -7,7 +8,19 @@ import Room from './Room';
 import styles from './lobby.module.scss';
 import { usePlayer } from '../../context/player';
 
+const makeRoomId = () => {
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = '';
+
+  for (let i = 0; i < 4; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+};
+
 const Lobby = ({ socket, rooms }) => {
+  const router = useRouter();
   const { playerState } = usePlayer();
   const { username, playersOnline, connected } = playerState;
 
@@ -17,7 +30,13 @@ const Lobby = ({ socket, rooms }) => {
     }
   }, [socket, username, playersOnline]);
 
-  // TODO: get all rooms here.
+  useSocket(socket, 'acceptHost', (roomId) => {
+    router.push(`/room/${roomId}`);
+  });
+
+  const hostRoom = () => {
+    socket.emit('requestRoom', makeRoomId());
+  };
 
   const roomsArray = rooms ? Object.keys(rooms) : [];
 
@@ -35,7 +54,8 @@ const Lobby = ({ socket, rooms }) => {
         </div>
       </header>
       <Container>
-        <h4>Username: {username || playerName}</h4>
+        <h4>Username: {username}</h4>
+        <Button onClick={hostRoom}>Host Game</Button>
         {roomsArray.length > 0 ? (
           <div className={styles.grid}>
             {/* TODO: split up active games with games waiting */}

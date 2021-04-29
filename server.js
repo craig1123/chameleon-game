@@ -88,6 +88,7 @@ function randomGrid() {
 // ======================
 
 io.on('connection', function (socket) {
+  // TODO: send all players
   socket.emit('connected', { playersOnline: users.length, connected: true });
 
   // locals
@@ -143,8 +144,7 @@ io.on('connection', function (socket) {
     socket.emit('acceptuser', { username, playersOnline: users.length, rooms });
   });
 
-  socket.on('requestroom', function (args) {
-    const requestedRoom = args[0];
+  socket.on('requestRoom', function (requestedRoom) {
     roomId = requestedRoom;
 
     if (rooms[roomId] === undefined) {
@@ -156,8 +156,9 @@ io.on('connection', function (socket) {
         gridTitle: newGrid.gridTitle,
       };
       active_grids[roomId] = newGrid.grid;
+      socket.emit('acceptHost', roomId);
     } else if (rooms[roomId].players.length >= MAX_PLAYERS) {
-      socket.emit('roomfull', rooms[roomId]);
+      socket.emit('roomFull', rooms);
       return;
     } else {
       rooms[roomId].players.push(username);
