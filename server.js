@@ -4,6 +4,7 @@ const io = require('socket.io')(server);
 const next = require('next');
 const wordSheet = require('./consts/wordSheet.js');
 const fakeRooms = require('./consts/fakeRooms.js');
+const fakeActiveGrids = require('./consts/fakeActiveGrids');
 // const cluster = require('cluster');
 // const numCPUs = require('os').cpus().length;
 // for scaling if we need more CPU cores https://github.com/mars/heroku-nextjs-custom-server-express/blob/master/server.js
@@ -29,13 +30,14 @@ const rooms = dev ? fakeRooms : {};
 //   },
 //   inProgress: boolean
 //   full: boolean
-//   privateRoom: boolean
+//   privateRoom?: boolean
+//   chat: [] // TODO in the future
 // }
 
 // grid by room
-const active_grids = {};
+const active_grids = dev ? fakeActiveGrids : {};
 // roomId: {
-//   grid: string,
+//   grid: string[],
 //   gridTitle: string,
 //   keyWord: string,
 //   chameleon: username,
@@ -195,8 +197,22 @@ nextApp.prepare().then(() => {
     res.json(rooms);
   });
 
-  app.get('/room/:room', (req, res) => {
-    res.json(rooms[req.params.room]);
+  app.get('/getRoom/:roomId', (req, res) => {
+    const room = rooms[req.params.roomId];
+    if (room) {
+      res.json(room);
+    } else {
+      res.json(null);
+    }
+  });
+
+  app.get('/getActiveGrid/:roomId', (req, res) => {
+    const grid = active_grids[req.params.roomId];
+    if (grid) {
+      res.json(grid);
+    } else {
+      res.json(null);
+    }
   });
 
   app.get('*', (req, res) => {

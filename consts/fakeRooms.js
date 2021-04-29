@@ -6,6 +6,8 @@ const fakeRooms = {
       stinky: 0,
       silly: 0,
       wormy: 0,
+      craig: 0,
+      ryan: 0,
     },
     inProgress: false,
     full: false,
@@ -59,4 +61,6 @@ const fakeRooms = {
   },
 };
 
-module.exports = fakeRooms;
+const dev = process.env.NODE_ENV !== 'production';
+
+module.exports = dev ? fakeRooms : {};

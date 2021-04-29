@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import useSocket from '../../hooks/useSocket';
@@ -39,6 +40,8 @@ const Lobby = ({ socket, rooms }) => {
   };
 
   const roomsArray = rooms ? Object.keys(rooms) : [];
+  const joinAGameArray = roomsArray.filter((roomId) => !rooms[roomId]?.inProgress && !rooms[roomId]?.full);
+  const inProgressGames = roomsArray.filter((roomId) => rooms[roomId]?.inProgress);
 
   return (
     <>
@@ -57,14 +60,28 @@ const Lobby = ({ socket, rooms }) => {
         <h4>Username: {username}</h4>
         <Button onClick={hostRoom}>Host Game</Button>
         {roomsArray.length > 0 ? (
-          <div className={styles.grid}>
-            {/* TODO: split up active games with games waiting */}
-            {roomsArray.map((roomId, i) => {
-              return <Room key={roomId} roomId={roomId} room={rooms[roomId]} />;
-            })}
-          </div>
+          <>
+            <hr />
+            <h3>Join a Game</h3>
+            <div className={styles.grid}>
+              {joinAGameArray.map((roomId) => (
+                <Room key={roomId} roomId={roomId} room={rooms[roomId]} />
+              ))}
+            </div>
+            <hr />
+            <h3>Games in Progress</h3>
+            <div className={styles.grid}>
+              {inProgressGames.map((roomId) => (
+                <Room key={roomId} roomId={roomId} room={rooms[roomId]} />
+              ))}
+            </div>
+          </>
         ) : (
-          'There are no active games'
+          <>
+            <br />
+            <br />
+            <Alert variant="warning">There are no games. Host one :)</Alert>
+          </>
         )}
       </Container>
     </>
