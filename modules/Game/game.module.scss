@@ -1,5 +1,32 @@
 @import '../../styles/variables.scss';
 
+.table-title {
+  background: #fff;
+  color: $blue;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  position: relative;
+  text-align: center;
+
+  h5 {
+    margin: 0px;
+  }
+}
+
+.arrow-collapse {
+  background: none;
+  border: none;
+  color: $purple;
+  font-size: 30px;
+  position: absolute;
+  right: 10px;
+  transition: transform 0.5s ease-in-out;
+
+  &.upsideDown {
+    transform: rotate(180deg);
+  }
+}
+
 .grid-table {
   border: 5px solid #fff;
   border-bottom-left-radius: 5px;
@@ -27,17 +54,5 @@
     font-family: sans-serif;
     font-size: 1.5rem;
     padding: 0.2rem;
-  }
-}
-
-.table-title {
-  background: #fff;
-  color: $blue;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  text-align: center;
-
-  h5 {
-    margin: 0px;
   }
 }
