@@ -1,24 +1,34 @@
 @import '../../styles/variables.scss';
 
 $header-height: 55px;
+$header-height-mobile: 45px;
 
-.login-wrapper {
-  background-color: $yellow;
-  margin-top: 50px;
-  padding: 20px;
+.lobby-wrapper {
+  h3 {
+    background-color: $yellow;
+    color: $blue;
+    text-align: center;
+    font-family: 'Permanent Marker', cursive;
+  }
 }
 
 .header-fill {
-  height: $header-height;
+  height: calc(#{$header-height-mobile} + 10px);
+  @media (min-width: $tablet) {
+    height: $header-height;
+  }
 }
 
 .header {
-  height: $header-height;
+  height: $header-height-mobile;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1;
+  @media (min-width: $tablet) {
+    height: $header-height;
+  }
 }
 
 .header-col {
@@ -35,8 +45,12 @@ $header-height: 55px;
   color: #000;
   white-space: nowrap;
   user-select: none;
-  padding: 16px;
+  padding: 12px;
   font-size: 14px;
+
+  @media (min-width: $tablet) {
+    padding: 16px;
+  }
 
   * {
     display: inline-block;
@@ -60,6 +74,13 @@ $header-height: 55px;
   background: #000;
   margin: 0 8px;
   height: 12px;
+}
+
+.host-game {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0px;
+  width: 100%;
 }
 
 .grid {

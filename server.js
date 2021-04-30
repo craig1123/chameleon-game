@@ -112,8 +112,8 @@ io.on('connection', function (socket) {
   }
 
   function removePlayer() {
-    console.log('A user is leaving: ' + username);
     if (username !== undefined) {
+      console.log('A user is leaving: ' + username);
       removeUser(username, users);
       username = undefined;
     }

@@ -56,19 +56,20 @@ const Lobby = ({ socket, rooms }) => {
           </div>
         </div>
       </header>
-      <Container>
-        <h4>Username: {username}</h4>
-        <Button onClick={hostRoom}>Host Game</Button>
+      <Container className={styles['lobby-wrapper']}>
+        <h3 className="h1">{username}</h3>
+        <div className={styles['host-game']}>
+          <Button onClick={hostRoom}>Host Game</Button>
+        </div>
         {roomsArray.length > 0 ? (
           <>
-            <hr />
             <h3>Join a Game</h3>
             <div className={styles.grid}>
               {joinAGameArray.map((roomId) => (
                 <Room key={roomId} roomId={roomId} room={rooms[roomId]} />
               ))}
             </div>
-            <hr />
+            <br />
             <h3>Games in Progress</h3>
             <div className={styles.grid}>
               {inProgressGames.map((roomId) => (
@@ -77,11 +78,7 @@ const Lobby = ({ socket, rooms }) => {
             </div>
           </>
         ) : (
-          <>
-            <br />
-            <br />
-            <Alert variant="warning">There are no games. Host one :)</Alert>
-          </>
+          <Alert variant="warning">There are no games. Host one :)</Alert>
         )}
       </Container>
     </>
