@@ -3,36 +3,42 @@ import { useRouter } from 'next/router';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import Toast from 'react-bootstrap/Toast';
 import useSocket from '../../hooks/useSocket';
+import Toasts from './Toasts';
 import HostGame from './HostGame';
 import Room from './Room';
 
 import styles from './lobby.module.scss';
 import { usePlayer } from '../../context/player';
 
-const Lobby = ({ socket, rooms }) => {
+const Lobby = ({ socket, roomsObj, playerName }) => {
   const router = useRouter();
+  const [rooms, setRooms] = useState(roomsObj);
   const [showHostModal, setShowHostModal] = useState(false);
   const { playerState } = usePlayer();
-  const { username, playersOnline, connected } = playerState;
+  const { playersOnline, connected } = playerState;
 
   useEffect(() => {
     if (socket && playersOnline === 0) {
-      socket.emit('requestuser', username);
+      socket.emit('requestuser', playerName);
     }
-  }, [socket, username, playersOnline]);
+  }, [socket, playerName, playersOnline]);
 
   useSocket(socket, 'acceptHost', (roomId) => {
     router.push(`/room/${roomId}`);
+  });
+  useSocket(socket, 'roomFull', (moreRooms) => {
+    setRooms(moreRooms);
   });
 
   const hostGame = () => {
     setShowHostModal(true);
   };
 
-  const roomsArray = rooms ? Object.keys(rooms) : [];
-  const joinAGameArray = roomsArray.filter((roomId) => !rooms[roomId]?.inProgress && !rooms[roomId]?.full);
-  const inProgressGames = roomsArray.filter((roomId) => rooms[roomId]?.inProgress);
+  const roomsArray = roomsObj ? Object.keys(roomsObj) : [];
+  const joinAGameArray = roomsArray.filter((roomId) => !roomsObj[roomId]?.inProgress && !roomsObj[roomId]?.full);
+  const inProgressGames = roomsArray.filter((roomId) => roomsObj[roomId]?.inProgress);
 
   return (
     <>
@@ -46,9 +52,10 @@ const Lobby = ({ socket, rooms }) => {
             <span className={styles['connection-label']}>Players online: {playersOnline}</span>
           </div>
         </div>
+        <Toasts socket={socket} />
       </header>
       <Container className={styles['lobby-wrapper']}>
-        <h3 className="h1">{username}</h3>
+        <h3 className="h1">{playerName}</h3>
         <div className={styles['host-game']}>
           <Button onClick={hostGame}>Host Game</Button>
           <HostGame show={showHostModal} onHide={() => setShowHostModal(false)} socket={socket} />

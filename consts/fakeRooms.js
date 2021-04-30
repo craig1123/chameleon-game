@@ -11,6 +11,8 @@ const fakeRooms = {
     },
     inProgress: false,
     full: false,
+    chameleonSeeClues: true,
+    pointsForGuessing: true,
   },
   fakeRoom2: {
     host: 'eli',

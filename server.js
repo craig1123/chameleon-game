@@ -31,6 +31,8 @@ const rooms = dev ? fakeRooms : {};
 //   inProgress: boolean
 //   full: boolean
 //   privateRoom?: boolean
+//   chameleonSeeClues?: boolean
+//   pointsForGuessing?: boolean
 //   chat: [] // TODO in the future
 // }
 
@@ -146,29 +148,32 @@ io.on('connection', function (socket) {
     socket.emit('acceptuser', { username, playersOnline: users.length, rooms });
   });
 
-  socket.on('requestRoom', function (requestedRoom) {
-    roomId = requestedRoom;
-
-    if (rooms[roomId] === undefined) {
-      const newGrid = randomGrid();
-      rooms[roomId] = {
+  socket.on('requestRoom', function (preferences) {
+    const { requestedRoom, gameBoard, privateRoom, chameleonSeeClues, pointsForGuessing } = preferences;
+    if (rooms[requestedRoom] === undefined) {
+      const newGrid = gameBoard ? { gridTitle: gameBoard, grid: gridTitles[gameBoard] } : randomGrid();
+      rooms[requestedRoom] = {
         host: username,
         players: [username],
         grid: newGrid.grid,
         gridTitle: newGrid.gridTitle,
+        privateRoom,
+        chameleonSeeClues,
+        pointsForGuessing,
       };
-      active_grids[roomId] = newGrid.grid;
-      socket.emit('acceptHost', roomId);
-    } else if (rooms[roomId].players.length >= MAX_PLAYERS) {
+      active_grids[requestedRoom] = newGrid.grid;
+      socket.emit('acceptHost', requestedRoom);
+    } else if (rooms[requestedRoom].players.length >= MAX_PLAYERS) {
       socket.emit('roomFull', rooms);
       return;
     } else {
-      rooms[roomId].players.push(username);
-      if (rooms[roomId].players.length === MAX_PLAYERS) {
-        rooms[roomId].full = true;
+      rooms[requestedRoom].players.push(username);
+      if (rooms[requestedRoom].players.length === MAX_PLAYERS) {
+        rooms[requestedRoom].full = true;
       }
     }
 
+    roomId = requestedRoom;
     socket.join(roomId);
     io.in(roomId).emit('updateonline', rooms[roomId]);
     socket.emit('deploygrid', active_grids[roomId]);

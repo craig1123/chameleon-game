@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import wordSheet from '../../consts/wordSheet';
+
+const differentClueBoards = Object.keys(wordSheet);
 
 export const makeRoomId = () => {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let text = '';
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
@@ -15,9 +21,19 @@ export const makeRoomId = () => {
 
 const HostGame = ({ onHide, show, socket }) => {
   const [loading, setLoading] = useState(false);
-  const hostRoom = () => {
+  const hostRoom = (e) => {
+    e.preventDefault();
     setLoading(true);
-    socket.emit('requestRoom', makeRoomId());
+    const formData = new FormData(e.target);
+    const gameBoard = formData.get('gameBoard');
+    const preferences = {
+      requestedRoom: makeRoomId(),
+      gameBoard: gameBoard === 'random' ? null : gameBoard,
+      privateRoom: formData.get('privateRoom') === 'on',
+      chameleonSeeClues: formData.get('privateRoom') === 'on',
+      pointsForGuessing: formData.get('privateRoom') === 'on',
+    };
+    socket.emit('requestRoom', preferences);
   };
 
   const onClose = () => {
@@ -26,22 +42,51 @@ const HostGame = ({ onHide, show, socket }) => {
   };
 
   return (
-    <Modal onHide={onClose} show={show} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+    <Modal onHide={onClose} show={show} animation={false} size="md" aria-labelledby="host-preferences-title" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Host Preferences</Modal.Title>
+        <Modal.Title id="host-preferences-title">Game Preferences (optional)</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <h4>Centered Modal</h4>
-        <p>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-          Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-        </p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button disabled={loading} onClick={hostRoom}>
-          {loading ? 'Setting up game...' : 'Host Game'}
-        </Button>
-      </Modal.Footer>
+      <Form onSubmit={hostRoom}>
+        <Modal.Body>
+          <Form.Row>
+            <Form.Group as={Col} controlId="gridBoard">
+              <Form.Label>Clue Boards</Form.Label>
+              <Form.Control as="select" defaultValue="Random Board" name="gameBoard">
+                <option value="random">Random Board</option>
+                {differentClueBoards.map((gridTitle) => (
+                  <option key={gridTitle} value={gridTitle}>
+                    {gridTitle}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          </Form.Row>
+
+          <Form.Group as={Row} controlId="privateRoom">
+            <Col>
+              <Form.Check label="Private Game" name="privateRoom" />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="chameleonSeeClues">
+            <Col>
+              <Form.Check name="chameleonSeeClues" label="Chameleon can see one random player's clue while typing" />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="pointsForGuessing">
+            <Col>
+              <Form.Check
+                name="pointsForGuessing"
+                label="Player gets 1 point for guessing chameleon when not in majority"
+              />
+            </Col>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button disabled={loading} type="submit">
+            {loading ? 'Setting up game...' : 'Host Game'}
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 };

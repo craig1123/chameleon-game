@@ -14,3 +14,7 @@ $theme-colors: (
 
 /* import bootstrap to set changes */
 @import '~bootstrap/scss/bootstrap';
+
+.card {
+  box-shadow: 0px 2px 4px 2px rgb(0 0 0 / 30%);
+}

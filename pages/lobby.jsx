@@ -23,17 +23,18 @@ export const getServerSideProps = async (ctx) => {
     };
   }
 
-  let rooms = {};
+  let roomsObj = {};
   try {
     const response = await fetch(`${config.url}/rooms`);
-    rooms = await response.json();
+    roomsObj = await response.json();
   } catch (error) {
     console.log(error);
   }
 
   return {
     props: {
-      rooms,
+      roomsObj,
+      playerName,
     },
   };
 };

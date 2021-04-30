@@ -40,6 +40,10 @@ h2 {
   font-family: 'Permanent Marker', cursive;
 }
 
+#__next {
+  position: relative;
+}
+
 .marker {
   font-family: 'Permanent Marker', cursive;
 }
@@ -62,7 +66,7 @@ h2 {
     position: absolute;
     height: 150px;
     width: auto;
-    bottom: 50px;
+    bottom: 0px;
     right: 40px;
   }
 
