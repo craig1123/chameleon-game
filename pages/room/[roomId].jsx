@@ -26,11 +26,11 @@ export const getServerSideProps = async (ctx) => {
 
   const urls = [`${config.url}/getRoom/${ctx.query.roomId}`, `${config.url}/getActiveGrid/${ctx.query.roomId}`];
   let room = null;
-  let grid = null;
+  let activeGame = null;
   try {
     const results = await Promise.all(urls.map((url) => fetch(url).then((resp) => resp.json())));
     room = results[0];
-    grid = results[1];
+    activeGame = results[1];
   } catch (error) {
     console.log(error);
   }
@@ -38,7 +38,7 @@ export const getServerSideProps = async (ctx) => {
   const player = room?.players?.[playerName] ?? 0;
   const playerExists = player > -1;
 
-  if (!grid || !room || !playerExists) {
+  if (!activeGame || !room || !playerExists) {
     return {
       redirect: {
         destination: '/lobby',
@@ -50,7 +50,7 @@ export const getServerSideProps = async (ctx) => {
   return {
     props: {
       room,
-      grid,
+      activeGame,
     },
   };
 };

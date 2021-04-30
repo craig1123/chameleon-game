@@ -1,0 +1,43 @@
+@import '../../styles/variables.scss';
+
+.grid-table {
+  border: 5px solid #fff;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  text-align: center;
+
+  td {
+    background-color: #fff;
+    vertical-align: middle;
+  }
+
+  tr:nth-child(even) td:nth-child(odd),
+  tr:nth-child(odd) td:nth-child(even) {
+    background-color: $aqua;
+  }
+
+  td.key-word {
+    border: 5px solid $purple;
+  }
+
+  .table-vertical,
+  th {
+    background-color: #fff !important;
+    color: #6ad0ba;
+    font-family: sans-serif;
+    font-size: 1.5rem;
+    padding: 0.2rem;
+  }
+}
+
+.table-title {
+  background: #fff;
+  color: $blue;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  text-align: center;
+
+  h5 {
+    margin: 0px;
+  }
+}
