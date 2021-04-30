@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
-function HostGame({ onHide, modalShow }) {
+export const makeRoomId = () => {
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = '';
+
+  for (let i = 0; i < 4; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+};
+
+const HostGame = ({ onHide, show, socket }) => {
+  const [loading, setLoading] = useState(false);
+  const hostRoom = () => {
+    setLoading(true);
+    socket.emit('requestRoom', makeRoomId());
+  };
+
+  const onClose = () => {
+    setLoading(false);
+    onHide();
+  };
+
   return (
-    <Modal onHide={onHide} show={modalShow} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+    <Modal onHide={onClose} show={show} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">Host Preferences</Modal.Title>
       </Modal.Header>
@@ -14,10 +38,12 @@ function HostGame({ onHide, modalShow }) {
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={onHide}>Close</Button>
+        <Button disabled={loading} onClick={hostRoom}>
+          {loading ? 'Setting up game...' : 'Host Game'}
+        </Button>
       </Modal.Footer>
     </Modal>
   );
-}
+};
 
 export default HostGame;

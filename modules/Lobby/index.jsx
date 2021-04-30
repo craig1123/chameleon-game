@@ -1,27 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import useSocket from '../../hooks/useSocket';
+import HostGame from './HostGame';
 import Room from './Room';
 
 import styles from './lobby.module.scss';
 import { usePlayer } from '../../context/player';
 
-const makeRoomId = () => {
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let text = '';
-
-  for (let i = 0; i < 4; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-
-  return text;
-};
-
 const Lobby = ({ socket, rooms }) => {
   const router = useRouter();
+  const [showHostModal, setShowHostModal] = useState(false);
   const { playerState } = usePlayer();
   const { username, playersOnline, connected } = playerState;
 
@@ -35,8 +26,8 @@ const Lobby = ({ socket, rooms }) => {
     router.push(`/room/${roomId}`);
   });
 
-  const hostRoom = () => {
-    socket.emit('requestRoom', makeRoomId());
+  const hostGame = () => {
+    setShowHostModal(true);
   };
 
   const roomsArray = rooms ? Object.keys(rooms) : [];
@@ -59,7 +50,8 @@ const Lobby = ({ socket, rooms }) => {
       <Container className={styles['lobby-wrapper']}>
         <h3 className="h1">{username}</h3>
         <div className={styles['host-game']}>
-          <Button onClick={hostRoom}>Host Game</Button>
+          <Button onClick={hostGame}>Host Game</Button>
+          <HostGame show={showHostModal} onHide={() => setShowHostModal(false)} socket={socket} />
         </div>
         {roomsArray.length > 0 ? (
           <>
