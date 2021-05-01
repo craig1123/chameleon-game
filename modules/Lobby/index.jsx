@@ -25,9 +25,10 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
     }
   }, [socket, playerName, playersOnline]);
 
-  useSocket(socket, 'acceptHost', (roomId) => {
+  useSocket(socket, 'acceptJoinGame', (roomId) => {
     router.push(`/room/${roomId}`);
   });
+
   useSocket(socket, 'roomFull', (moreRooms) => {
     setRooms(moreRooms);
   });
@@ -65,14 +66,14 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
             <h3>Join a Game</h3>
             <div className={styles.grid}>
               {joinAGameArray.map((roomId) => (
-                <Room key={roomId} roomId={roomId} room={rooms[roomId]} />
+                <Room key={roomId} roomId={roomId} room={rooms[roomId]} socket={socket} />
               ))}
             </div>
             <br />
             <h3>Games in Progress</h3>
             <div className={styles.grid}>
               {inProgressGames.map((roomId) => (
-                <Room key={roomId} roomId={roomId} room={rooms[roomId]} />
+                <Room key={roomId} roomId={roomId} room={rooms[roomId]} socket={socket} />
               ))}
             </div>
           </>

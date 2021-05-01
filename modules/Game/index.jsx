@@ -12,7 +12,7 @@ const Game = ({ socket, activeGame, room }) => {
   const [roomState, setRoomState] = useState(room);
   const [gameState, setGameState] = useState(activeGame);
 
-  useSocket(socket, 'updateonline', (state) => {
+  useSocket(socket, 'updateRoom', (state) => {
     console.log(state);
   });
 

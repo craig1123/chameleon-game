@@ -9,7 +9,7 @@ import wordSheet from '../../consts/wordSheet';
 const differentClueBoards = Object.keys(wordSheet);
 
 export const makeRoomId = () => {
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const possible = 'abcdefghijklmnopqrstuvwxyz';
   let text = '';
 
   for (let i = 0; i < 5; i++) {
@@ -25,13 +25,13 @@ const HostGame = ({ onHide, show, socket }) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const gameBoard = formData.get('gameBoard');
+    const gameTitle = formData.get('gameTitle');
     const preferences = {
       requestedRoom: makeRoomId(),
-      gameBoard: gameBoard === 'random' ? null : gameBoard,
+      gameTitle: gameTitle === 'random' ? null : gameTitle,
       privateRoom: formData.get('privateRoom') === 'on',
-      chameleonSeeClues: formData.get('privateRoom') === 'on',
-      pointsForGuessing: formData.get('privateRoom') === 'on',
+      chameleonSeeClues: formData.get('chameleonSeeClues') === 'on',
+      pointsForGuessing: formData.get('pointsForGuessing') === 'on',
     };
     socket.emit('requestRoom', preferences);
   };
@@ -51,7 +51,7 @@ const HostGame = ({ onHide, show, socket }) => {
           <Form.Row>
             <Form.Group as={Col} controlId="gridBoard">
               <Form.Label>Clue Boards</Form.Label>
-              <Form.Control as="select" defaultValue="Random Board" name="gameBoard">
+              <Form.Control as="select" defaultValue="Random Board" name="gameTitle">
                 <option value="random">Random Board</option>
                 {differentClueBoards.map((gridTitle) => (
                   <option key={gridTitle} value={gridTitle}>

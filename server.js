@@ -81,9 +81,10 @@ function userNameExists(username) {
 // get a random grid
 function randomGrid() {
   const randomTitle = getRandomChoice(gridTitlesLength);
+  const gridTitle = gridTitles[randomTitle];
   return {
-    gridTitle: randomTitle,
-    grid: gridTitles[randomTitle],
+    gridTitle: gridTitle,
+    grid: wordSheet[gridTitle],
   };
 }
 
@@ -101,7 +102,7 @@ io.on('connection', function (socket) {
 
   // exit room
   function exit() {
-    socket.to(roomId).emit('updateonline', rooms[roomId]);
+    socket.to(roomId).emit('updateRoom', { roomState: rooms[roomId] });
     socket.leave(roomId);
 
     if (rooms[roomId] && rooms[roomId].players.length === 0) {
@@ -149,34 +150,54 @@ io.on('connection', function (socket) {
   });
 
   socket.on('requestRoom', function (preferences) {
-    const { requestedRoom, gameBoard, privateRoom, chameleonSeeClues, pointsForGuessing } = preferences;
+    const { requestedRoom } = preferences;
+
     if (rooms[requestedRoom] === undefined) {
-      const newGrid = gameBoard ? { gridTitle: gameBoard, grid: gridTitles[gameBoard] } : randomGrid();
+      console.log(username + ' is requesting a new room: ' + requestedRoom);
+      const { gameTitle, privateRoom, chameleonSeeClues, pointsForGuessing } = preferences;
+      const newGrid = gameTitle ? { gridTitle: gameTitle, grid: wordSheet[gameTitle] } : randomGrid();
       rooms[requestedRoom] = {
         host: username,
         players: [username],
-        grid: newGrid.grid,
-        gridTitle: newGrid.gridTitle,
         privateRoom,
         chameleonSeeClues,
         pointsForGuessing,
       };
-      active_grids[requestedRoom] = newGrid.grid;
-      socket.emit('acceptHost', requestedRoom);
+      active_grids[requestedRoom] = {
+        grid: newGrid.grid,
+        gridTitle: newGrid.gridTitle,
+        keyWord: '',
+        chameleon: '',
+        players: {
+          [username]: {
+            clue: '',
+            clueReady: false,
+            vote: '',
+          },
+        },
+      };
+      roomId = requestedRoom;
+      socket.join(roomId);
+      io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
+      socket.emit('acceptJoinGame', requestedRoom);
     } else if (rooms[requestedRoom].players.length >= MAX_PLAYERS) {
       socket.emit('roomFull', rooms);
       return;
-    } else {
-      rooms[requestedRoom].players.push(username);
-      if (rooms[requestedRoom].players.length === MAX_PLAYERS) {
-        rooms[requestedRoom].full = true;
+    } else if (rooms[requestedRoom] && active_grids[requestedRoom]) {
+      roomId = requestedRoom;
+      rooms[roomId].players.push(username);
+      active_grids[roomId].players[username] = {
+        clue: '',
+        clueReady: false,
+        vote: '',
+      };
+      if (rooms[roomId].players.length === MAX_PLAYERS) {
+        rooms[roomId].full = true;
       }
+      socket.join(roomId);
+      io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
+      socket.emit('acceptJoinGame', requestedRoom);
     }
-
-    roomId = requestedRoom;
-    socket.join(roomId);
-    io.in(roomId).emit('updateonline', rooms[roomId]);
-    socket.emit('deploygrid', active_grids[roomId]);
   });
 
   // changegrid event

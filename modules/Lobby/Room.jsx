@@ -1,5 +1,4 @@
-import React from 'react';
-import Link from 'next/link';
+import React, { memo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import PrivateSignup from './PrivateSignup';
@@ -19,23 +18,26 @@ function getStatus(room) {
   return 'Waiting';
 }
 
-const Room = ({ room, roomId }) => {
+const Room = ({ room, roomId, socket }) => {
   const { host, full, inProgress, players, privateRoom } = room;
+  const joinGame = () => {
+    socket.emit('requestRoom', { requestedRoom: roomId });
+  };
   return (
     <Card bg="primary" style={cardStyles} className="mb-2">
       <Card.Header>Host: {host}</Card.Header>
       <Card.Body>
         <Card.Text>Players: {Object.keys(players).join(', ')}</Card.Text>
         <Card.Text>Status: {getStatus(room)}</Card.Text>
-        {privateRoom && <PrivateSignup roomId={roomId} />}
+        {privateRoom && <PrivateSignup roomId={roomId} socket={socket} />}
         {full || inProgress || privateRoom ? null : (
-          <Link href={`/room/${roomId}`}>
-            <Button variant="secondary">Join Game</Button>
-          </Link>
+          <Button variant="secondary" onClick={joinGame}>
+            Join Game
+          </Button>
         )}
       </Card.Body>
     </Card>
   );
 };
 
-export default Room;
+export default memo(Room);

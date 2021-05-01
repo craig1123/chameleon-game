@@ -286,7 +286,7 @@ const wordSheet = {
     'Arctic',
     'Swamp',
   ],
-  Harry: [
+  'Harry Potter': [
     'Harry Potter',
     'Ron Weasley',
     'Hermione Granger',
