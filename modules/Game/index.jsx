@@ -12,6 +12,12 @@ const Game = ({ socket, activeGame, room }) => {
   const [roomState, setRoomState] = useState(room);
   const [gameState, setGameState] = useState(activeGame);
 
+  useEffect(() => {
+    return () => {
+      socket.emit('leaveRoom');
+    };
+  }, []);
+
   useSocket(socket, 'updateRoom', (state) => {
     console.log(state);
   });

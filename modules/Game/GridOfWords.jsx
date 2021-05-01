@@ -20,7 +20,7 @@ const GridOfWords = ({ gameState, isChameleon }) => {
   const fourByFour = useMemo(() => toMatrix(grid, isMobile ? 2 : 4), [grid, isMobile]);
   const tableHeaders = isMobile ? gameColumnsMobile : gameColumns;
   return (
-    <>
+    <section className={styles['grid-of-words']}>
       <div className={styles['table-title']}>
         <button
           onClick={() => setShowTable(!showTable)}
@@ -59,7 +59,7 @@ const GridOfWords = ({ gameState, isChameleon }) => {
           </Table>
         </div>
       </Collapse>
-    </>
+    </section>
   );
 };
 

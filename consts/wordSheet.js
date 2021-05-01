@@ -71,7 +71,7 @@ const wordSheet = {
     'Seoul',
     'Vienna',
   ],
-  Cartoon: [
+  'Cartoon Animals': [
     'Garfield',
     'Scooby-Doo',
     'Yogi Bear',

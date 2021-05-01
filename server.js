@@ -63,13 +63,31 @@ const gridTitlesLength = gridTitles.length;
 function getRandomChoice(N) {
   return Math.floor(Math.random() * N);
 }
+function getRandomValue(arr) {
+  return arr[getRandomChoice(arr.length)];
+}
 
 // remove a user from an array
-function removeUser(username, array) {
+function removeUserFromArr(username, array) {
   const index = array.indexOf(username);
   // if we found a use remove them
   if (index > -1) {
     array.splice(index, 1);
+  }
+}
+
+// removes users from objects
+function removeUserFromData(username, roomId) {
+  if (rooms[roomId]) {
+    delete rooms[roomId].players[username];
+    const players = Object.keys(rooms[roomId].players);
+    if (rooms[roomId].host === username && players.length > 0) {
+      // assign new host
+      rooms[roomId].host = getRandomValue(players);
+    }
+  }
+  if (active_grids[roomId]) {
+    delete active_grids[roomId].players[username];
   }
 }
 
@@ -80,8 +98,7 @@ function userNameExists(username) {
 
 // get a random grid
 function randomGrid() {
-  const randomTitle = getRandomChoice(gridTitlesLength);
-  const gridTitle = gridTitles[randomTitle];
+  const gridTitle = gridTitles[getRandomChoice(gridTitlesLength)];
   return {
     gridTitle: gridTitle,
     grid: wordSheet[gridTitle],
@@ -101,28 +118,26 @@ io.on('connection', function (socket) {
   let roomId;
 
   // exit room
-  function exit() {
+  function exitRoom() {
     socket.to(roomId).emit('updateRoom', { roomState: rooms[roomId] });
     socket.leave(roomId);
 
-    if (rooms[roomId] && rooms[roomId].players.length === 0) {
+    if (Object.keys(rooms[roomId].players).length === 0) {
       delete rooms[roomId];
       delete active_grids[roomId];
     }
 
-    username = undefined;
     roomId = undefined;
   }
 
   function removePlayer() {
     if (username !== undefined) {
-      console.log('A user is leaving: ' + username);
-      removeUser(username, users);
+      removeUserFromArr(username, users);
       username = undefined;
     }
     if (username !== undefined && roomId !== undefined) {
-      removeUser(username, rooms[roomId]);
-      exit();
+      removeUserFromData(username, roomId);
+      exitRoom();
     }
   }
 
@@ -131,9 +146,9 @@ io.on('connection', function (socket) {
   socket.on('disconnect', removePlayer);
 
   // leaveroom event
-  socket.on('leaveroom', function () {
-    removeUser(username, rooms[roomId]);
-    exit();
+  socket.on('leaveRoom', function () {
+    removeUserFromData(username, roomId);
+    exitRoom();
   });
 
   socket.on('requestuser', function (requestedUsername) {
@@ -158,7 +173,9 @@ io.on('connection', function (socket) {
       const newGrid = gameTitle ? { gridTitle: gameTitle, grid: wordSheet[gameTitle] } : randomGrid();
       rooms[requestedRoom] = {
         host: username,
-        players: [username],
+        players: {
+          [username]: 0,
+        },
         privateRoom,
         chameleonSeeClues,
         pointsForGuessing,
@@ -180,18 +197,18 @@ io.on('connection', function (socket) {
       socket.join(roomId);
       io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
       socket.emit('acceptJoinGame', requestedRoom);
-    } else if (rooms[requestedRoom].players.length >= MAX_PLAYERS) {
+    } else if (rooms[requestedRoom] && Object.keys(rooms[requestedRoom].players).length >= MAX_PLAYERS) {
       socket.emit('roomFull', rooms);
       return;
     } else if (rooms[requestedRoom] && active_grids[requestedRoom]) {
       roomId = requestedRoom;
-      rooms[roomId].players.push(username);
+      rooms[roomId].players[username] = 0;
       active_grids[roomId].players[username] = {
         clue: '',
         clueReady: false,
         vote: '',
       };
-      if (rooms[roomId].players.length === MAX_PLAYERS) {
+      if (Object.keys(rooms[requestedRoom].players).length === MAX_PLAYERS) {
         rooms[roomId].full = true;
       }
       socket.join(roomId);
@@ -210,11 +227,11 @@ io.on('connection', function (socket) {
 
   // assign roles event
   socket.on('assignroles', function () {
-    const chameleonIndex = getRandomChoice(rooms[roomId].length);
-    const chameleonName = rooms[roomId][chameleonIndex];
-    const wordIndex = getRandomChoice(active_grids[roomId].length);
-    const word = active_grids[roomId][wordIndex];
-    io.in(roomId).emit('giveassigment', [word, chameleonName]);
+    // const chameleonIndex = getRandomChoice(rooms[roomId].length);
+    // const chameleonName = rooms[roomId][chameleonIndex];
+    // const wordIndex = getRandomChoice(active_grids[roomId].length);
+    // const word = active_grids[roomId][wordIndex];
+    // io.in(roomId).emit('giveassigment', [word, chameleonName]);
   });
 });
 

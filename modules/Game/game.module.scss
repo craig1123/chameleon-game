@@ -1,5 +1,10 @@
 @import '../../styles/variables.scss';
 
+.grid-of-words {
+  margin: auto;
+  max-width: 586px;
+}
+
 .table-title {
   background: #fff;
   color: $blue;
@@ -35,7 +40,11 @@
 
   td {
     background-color: #fff;
+    border-color: transparent;
+    height: 60px;
+    padding: 0px;
     vertical-align: middle;
+    width: 160px;
   }
 
   tr:nth-child(even) td:nth-child(odd),
@@ -53,6 +62,7 @@
     color: #6ad0ba;
     font-family: sans-serif;
     font-size: 1.5rem;
-    padding: 0.2rem;
+    padding: 0.2rem 0.75rem;
+    width: initial;
   }
 }
