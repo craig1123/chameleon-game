@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Toast from 'react-bootstrap/Toast';
 import useSocket from '../../hooks/useSocket';
+import Header from '../Header';
 import Toasts from './Toasts';
 import HostGame from './HostGame';
 import Room from './Room';
@@ -17,7 +17,7 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
   const [rooms, setRooms] = useState(roomsObj);
   const [showHostModal, setShowHostModal] = useState(false);
   const { playerState } = usePlayer();
-  const { playersOnline, connected } = playerState;
+  const { playersOnline } = playerState;
 
   useEffect(() => {
     if (socket && playersOnline === 0) {
@@ -43,18 +43,8 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
 
   return (
     <>
-      <div className={styles['header-fill']} />
-      <header className={styles.header}>
-        <div className={styles['header-col']}>
-          <div className={styles['header-connection']}>
-            <span className={styles['connection-label']}>Connection: </span>
-            <span className={styles.circle} style={{ background: connected ? '#67c23a' : '#f56c6c' }}></span>
-            <span className={styles['header-separator']}></span>
-            <span className={styles['connection-label']}>Players online: {playersOnline}</span>
-          </div>
-        </div>
-        <Toasts socket={socket} />
-      </header>
+      <Header />
+      <Toasts socket={socket} />
       <Container className={styles['lobby-wrapper']}>
         <h3 className="h1">{playerName}</h3>
         <div className={styles['host-game']}>

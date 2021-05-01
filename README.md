@@ -19,13 +19,9 @@ meta stuff
 
 Lobby
 
-- Host new game
-  - setup wizard? show preferences? Maybe should be on the game page
-
 GamePlay
 
 - design
-  - build grid
   - most votes
   - chameleon reveal
   - select a new wordlist/grid
@@ -41,8 +37,10 @@ GamePlay
     - preferences option to gain 1pt if you guessed the chameleon correctly
   - if the chameleon is caught, but guesses correctly: chameleon - 1pts, everyone else - 0pts
   - if the chameleon is caught and doesn't guess the secret word: chameleon - 0pts, everyone else - 2pts (preferences option for 1pt)
-- First person to 5 wins!
+  - Design for score. I'm thinking to put the score right next to name. Put names around the card in the middle.
+- First person to 5 wins! (default, more in host preferences)
 - Restart games
 
 ## How To Play
+
 https://www.youtube.com/watch?v=3IEEUcG0nSo

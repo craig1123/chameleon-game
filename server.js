@@ -24,6 +24,7 @@ const users = [];
 // active rooms
 const rooms = dev ? fakeRooms : {};
 // roomId: {
+//   id: string,
 //   host: username,
 //   players: {
 //     [userName]: points (number)
@@ -122,7 +123,7 @@ io.on('connection', function (socket) {
     socket.to(roomId).emit('updateRoom', { roomState: rooms[roomId] });
     socket.leave(roomId);
 
-    if (Object.keys(rooms[roomId].players).length === 0) {
+    if (Object.keys(rooms[roomId] && rooms[roomId].players).length === 0) {
       delete rooms[roomId];
       delete active_grids[roomId];
     }
@@ -172,6 +173,7 @@ io.on('connection', function (socket) {
       const { gameTitle, privateRoom, chameleonSeeClues, pointsForGuessing } = preferences;
       const newGrid = gameTitle ? { gridTitle: gameTitle, grid: wordSheet[gameTitle] } : randomGrid();
       rooms[requestedRoom] = {
+        id: requestedRoom,
         host: username,
         players: {
           [username]: 0,
@@ -215,6 +217,29 @@ io.on('connection', function (socket) {
       io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
       socket.emit('acceptJoinGame', requestedRoom);
     }
+  });
+
+  // host starts the game
+  socket.on('startGame', function () {
+    if (!rooms[roomId]) {
+      return;
+    }
+    const currentGrid = active_grids[roomId];
+    rooms[roomId].inProgress = true;
+    active_grids[roomId].keyWord = getRandomValue(currentGrid.grid);
+    active_grids[roomId].chameleon = getRandomValue(Object.keys(currentGrid.players));
+    active_grids[roomId].players = Object.keys(currentGrid.players).reduce(
+      (prev, cur) => ({
+        ...prev,
+        [cur]: {
+          clue: '',
+          clueReady: false,
+          vote: '',
+        },
+      }),
+      {}
+    );
+    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });
 
   // changegrid event

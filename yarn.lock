@@ -2873,6 +2873,11 @@ react-overlays@^5.0.0:
     uncontrollable "^7.2.1"
     warning "^4.0.3"
 
+react-recipes@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-recipes/-/react-recipes-1.1.1.tgz#9a03f42d40190658db19f5e44d171b90793b1e65"
+  integrity sha512-jb6pgO4xndP/0+gOFUI32iPRybDrpu6Qc+IRAmmazLc0e+dPUQ473dp2nMOm2/vAFsy7yUHZJncjWgjH65Ah+Q==
+
 react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"

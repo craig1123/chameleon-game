@@ -1,6 +1,7 @@
 const fakeRooms = {
   fakeRoom1: {
-    host: 'poop',
+    id: 'fakeRoom1',
+    host: 'craig',
     players: {
       poop: 0,
       stinky: 0,
@@ -15,6 +16,7 @@ const fakeRooms = {
     pointsForGuessing: true,
   },
   fakeRoom2: {
+    id: 'fakeRoom2',
     host: 'eli',
     players: {
       eli: 2,
@@ -26,6 +28,7 @@ const fakeRooms = {
     full: false,
   },
   fakeRoom3: {
+    id: 'fakeRoom3',
     host: 'a',
     players: {
       a: 1,
@@ -43,6 +46,7 @@ const fakeRooms = {
     full: true,
   },
   fakeRoom4: {
+    id: 'fakeRoom4',
     host: 'me',
     players: {
       me: 0,
@@ -52,6 +56,7 @@ const fakeRooms = {
     full: false,
   },
   fakeRoom5: {
+    id: 'fakeRoom5',
     host: 'me',
     players: {
       me: 0,

@@ -1,0 +1,68 @@
+@import '../../styles/variables.scss';
+
+$header-height: 55px;
+$header-height-mobile: 45px;
+
+.header-fill {
+  height: calc(#{$header-height-mobile} + 10px);
+  @media (min-width: $tablet) {
+    height: $header-height;
+  }
+}
+
+.header {
+  height: $header-height-mobile;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  @media (min-width: $tablet) {
+    height: $header-height;
+  }
+}
+
+.header-col {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+}
+
+.header-connection {
+  background-color: $yellow;
+  border-bottom-right-radius: 20px;
+  color: #000;
+  white-space: nowrap;
+  user-select: none;
+  padding: 12px;
+  font-size: 14px;
+
+  @media (min-width: $tablet) {
+    padding: 16px;
+  }
+
+  * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.connection-label {
+  margin-right: 8px;
+}
+
+.circle {
+  border: 1px solid #000;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+}
+
+.header-separator {
+  width: 1px;
+  background: #000;
+  margin: 0 8px;
+  height: 12px;
+}

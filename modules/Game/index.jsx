@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
-import Table from 'react-bootstrap/Table';
 import useSocket from '../../hooks/useSocket';
 import { usePlayer } from '../../context/player';
+import Header from '../Header';
 import GridOfWords from './GridOfWords';
+import HostOptions from './HostOptions';
+import GameId from './GameId';
 
 const Game = ({ socket, activeGame, room }) => {
   const router = useRouter();
   const { playerState } = usePlayer();
+  const { username } = playerState;
   const [roomState, setRoomState] = useState(room);
   const [gameState, setGameState] = useState(activeGame);
 
@@ -19,56 +22,31 @@ const Game = ({ socket, activeGame, room }) => {
   }, []);
 
   useSocket(socket, 'updateRoom', (state) => {
+    if (state.roomState) {
+      setRoomState(state.roomState);
+    }
     console.log(state);
+    if (state.gameState) {
+      setGameState(state.gameState);
+    }
   });
 
   const leaveRoom = () => {
     router.push('/lobby');
   };
 
-  const isChameleon = playerState.userName === gameState.chameleon;
+  const isChameleon = username === gameState.chameleon;
+  const isHost = username === roomState.host;
 
   return (
     <Container>
+      <Header showConnection={false}>
+        <GameId roomId={roomState.id} />
+      </Header>
+      {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} />}
       <GridOfWords gameState={gameState} isChameleon={isChameleon} />
 
-      {/* <div id="game-div">
-        <hr />
-        <Row>
-          <div className="col-12" id="room-indicator"></div>
-          <div className="col-12" id="user-indicator"></div>
-          <div className="col-12">
-            <button onClick={leaveRoom} id="leave" className="box">
-              Leave room
-            </button>
-          </div>
-        </Row>
-        <hr />
-        <Row className="controls">
-          <div className="col-6">
-            <button id="change-grid" className="box">
-              Reset grid
-            </button>
-          </div>
-          <div className="col-6">
-            <button id="assign-roles" className="box">
-              Assign roles
-            </button>
-          </div>
-        </Row>
-        <hr />
-        <Row>
-          <div className="col-6" id="roleholder">
-            <strong id="role">Role unassigned</strong>
-          </div>
-          <div className="col-6">
-            <button id="hide-role" className="box">
-              Toggle
-            </button>
-          </div>
-        </Row>
-        <hr />
-      </div> */}
+      {/* player options, leave game. */}
     </Container>
   );
 };
