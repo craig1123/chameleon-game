@@ -251,11 +251,13 @@ io.on('connection', function (socket) {
     );
   });
 
-  socket.on('changeGrid', function () {
-    const newGrid = randomGrid();
+  socket.on('changeGrid', function (gameTitle) {
+    const newGrid = gameTitle === 'random' ? randomGrid() : { gridTitle: gameTitle, grid: wordSheet[gameTitle] };
     active_grids[roomId].grid = newGrid.grid;
     active_grids[roomId].gridTitle = newGrid.gridTitle;
-    io.in(roomId).emit('deploygrid', active_grids[roomId]);
+    active_grids[roomId].keyWord = '';
+    active_grids[roomId].chameleon = '';
+    io.in(roomId).emit('updateRoom', { gameState: active_grids[roomId] });
   });
 });
 

@@ -1,17 +1,7 @@
 @import '../../styles/variables.scss';
 
-.host-options {
-  background: $yellow;
-  border-radius: 5px;
-  padding: 5px;
-  margin-bottom: 1rem;
-  text-align: center;
-
-  @media (min-width: $tablet) {
-    left: 10px;
-    position: absolute;
-    width: 300px;
-  }
+.relative {
+  position: relative;
 }
 
 .grid-of-words {
@@ -106,5 +96,23 @@
     th {
       font-size: 1.5rem;
     }
+  }
+}
+
+.host-options {
+  background: $yellow;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+
+  @media (min-width: $small-desktop) {
+    border-radius: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    left: 0px;
+    position: absolute;
+    top: 20px;
+    width: 300px;
   }
 }

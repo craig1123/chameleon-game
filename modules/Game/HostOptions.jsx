@@ -15,7 +15,7 @@ const differentClueBoards = Object.keys(wordSheet);
  * Can't change settings while a game is in progress.
  * In Progress goes to false everytime the round is over
  */
-const HostOptions = ({ socket, roomState, gameState }) => {
+const HostOptions = ({ socket, roomState, gameState, players }) => {
   const { gridTitle } = gameState;
   const { inProgress } = roomState;
 
@@ -27,13 +27,17 @@ const HostOptions = ({ socket, roomState, gameState }) => {
     socket.emit('kickPlayer', playerName);
   };
 
+  const changeGrid = (e) => {
+    socket.emit('changeGrid', e.target.value);
+  };
+
   return (
     <section className={styles['host-options']}>
       <h4>Host Options</h4>
       <div>
         Players:{' '}
-        {Object.keys(roomState.players).map((player) => (
-          <div onClick={kickPlayer(player)} key={player} title="Kick Player">
+        {players.map((player) => (
+          <div onClick={kickPlayer(player)} key={player} title="Kick Player" style={{ cursor: 'pointer' }}>
             {player} X
           </div>
         ))}
@@ -41,8 +45,7 @@ const HostOptions = ({ socket, roomState, gameState }) => {
       <Form>
         <Form.Row>
           <Form.Group as={Col} controlId="gridBoard">
-            <Form.Label>Clue Boards</Form.Label>
-            <Form.Control as="select" defaultValue={gridTitle} name="gameTitle" disabled={inProgress}>
+            <Form.Control as="select" value={gridTitle} onChange={changeGrid} name="gameTitle" disabled={inProgress}>
               <option value="random">Random Board</option>
               {differentClueBoards.map((title) => (
                 <option key={title} value={title}>
@@ -52,7 +55,7 @@ const HostOptions = ({ socket, roomState, gameState }) => {
             </Form.Control>
           </Form.Group>
         </Form.Row>
-        <Button onClick={startGame} disabled={inProgress}>
+        <Button onClick={startGame} disabled={inProgress || players.length < 3}>
           Start Game
         </Button>
       </Form>

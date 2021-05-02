@@ -216,7 +216,8 @@ const wordSheet = {
     'Katniss Everdeen',
   ],
   'Film Genres': [
-    'Horror	Action',
+    'Horror',
+    'Action',
     'Thriller',
     'Sci-Fi',
     'Rom-Com',
@@ -306,6 +307,7 @@ const wordSheet = {
   ],
   'Historical Figure': [
     'Jesus',
+    'Napoleon',
     'Stalin',
     'Hitler',
     'Darwin',
@@ -351,8 +353,7 @@ const wordSheet = {
     'TV',
     'Electricity',
     'Writing',
-    'Steam',
-    'Engine',
+    'Steam Engine',
     'Car',
     'Telephone',
     'Camera',
@@ -643,7 +644,8 @@ const wordSheet = {
     'Ronda Rousey',
     'Tony Hawk',
     'Shaun White',
-    'Usain Bolt	Dwayne "The Rock" Johnson',
+    'Usain Bolt',
+    'Dwayne "The Rock" Johnson',
   ],
   States: [
     'California',

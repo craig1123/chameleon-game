@@ -9,6 +9,8 @@ import GridOfWords from './GridOfWords';
 import HostOptions from './HostOptions';
 import GameId from './GameId';
 
+import styles from './game.module.scss';
+
 const Game = ({ socket, activeGame, room }) => {
   const router = useRouter();
   const { playerState } = usePlayer();
@@ -42,20 +44,25 @@ const Game = ({ socket, activeGame, room }) => {
     }
   };
 
+  const players = Object.keys(roomState.players);
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
 
   return (
-    <Container>
+    <>
       <Header showConnection={false}>
         <GameId roomId={roomState.id} />
       </Header>
       <Toasts socket={socket} callback={kickPlayer} />
-      {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} />}
-      <GridOfWords gameState={gameState} isChameleon={isChameleon} />
+      <div className={styles.relative}>
+        <Container>
+          <GridOfWords gameState={gameState} isChameleon={isChameleon} />
+          {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} players={players} />}
 
-      {/* player options, leave game. */}
-    </Container>
+          {/* player options, leave game. */}
+        </Container>
+      </div>
+    </>
   );
 };
 
