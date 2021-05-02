@@ -78,7 +78,7 @@ function removeUserFromArr(username, array) {
 }
 
 // removes users from objects
-function removeUserFromData(username, roomId) {
+function removeUserFromRoom(username, roomId) {
   if (rooms[roomId]) {
     delete rooms[roomId].players[username];
     const players = Object.keys(rooms[roomId].players);
@@ -123,7 +123,7 @@ io.on('connection', function (socket) {
     socket.to(roomId).emit('updateRoom', { roomState: rooms[roomId] });
     socket.leave(roomId);
 
-    if (Object.keys(rooms[roomId] && rooms[roomId].players).length === 0) {
+    if (rooms[roomId] && Object.keys(rooms[roomId].players).length === 0) {
       delete rooms[roomId];
       delete active_grids[roomId];
     }
@@ -137,7 +137,7 @@ io.on('connection', function (socket) {
       username = undefined;
     }
     if (username !== undefined && roomId !== undefined) {
-      removeUserFromData(username, roomId);
+      removeUserFromRoom(username, roomId);
       exitRoom();
     }
   }
@@ -148,7 +148,7 @@ io.on('connection', function (socket) {
 
   // leaveroom event
   socket.on('leaveRoom', function () {
-    removeUserFromData(username, roomId);
+    removeUserFromRoom(username, roomId);
     exitRoom();
   });
 
@@ -200,7 +200,7 @@ io.on('connection', function (socket) {
       io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
       socket.emit('acceptJoinGame', requestedRoom);
     } else if (rooms[requestedRoom] && Object.keys(rooms[requestedRoom].players).length >= MAX_PLAYERS) {
-      socket.emit('roomFull', rooms);
+      socket.emit('toaster', { title: 'Error', message: 'The room you requested is full' }, rooms);
       return;
     } else if (rooms[requestedRoom] && active_grids[requestedRoom]) {
       roomId = requestedRoom;
@@ -242,21 +242,20 @@ io.on('connection', function (socket) {
     io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });
 
-  // changegrid event
-  socket.on('changegrid', function () {
+  // HOST OPTIONS
+  socket.on('kickPlayer', function (playerName) {
+    io.in(roomId).emit(
+      'toaster',
+      { title: 'Kicked Player', message: `Player ${playerName} was kicked from the room` },
+      playerName
+    );
+  });
+
+  socket.on('changeGrid', function () {
     const newGrid = randomGrid();
     active_grids[roomId].grid = newGrid.grid;
     active_grids[roomId].gridTitle = newGrid.gridTitle;
     io.in(roomId).emit('deploygrid', active_grids[roomId]);
-  });
-
-  // assign roles event
-  socket.on('assignroles', function () {
-    // const chameleonIndex = getRandomChoice(rooms[roomId].length);
-    // const chameleonName = rooms[roomId][chameleonIndex];
-    // const wordIndex = getRandomChoice(active_grids[roomId].length);
-    // const word = active_grids[roomId][wordIndex];
-    // io.in(roomId).emit('giveassigment', [word, chameleonName]);
   });
 });
 

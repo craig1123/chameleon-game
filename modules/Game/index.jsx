@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import useSocket from '../../hooks/useSocket';
 import { usePlayer } from '../../context/player';
 import Header from '../Header';
+import Toasts from '../Toasts';
 import GridOfWords from './GridOfWords';
 import HostOptions from './HostOptions';
 import GameId from './GameId';
@@ -35,6 +36,12 @@ const Game = ({ socket, activeGame, room }) => {
     router.push('/lobby');
   };
 
+  const kickPlayer = (playerName) => {
+    if (username === playerName) {
+      leaveRoom();
+    }
+  };
+
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
 
@@ -43,6 +50,7 @@ const Game = ({ socket, activeGame, room }) => {
       <Header showConnection={false}>
         <GameId roomId={roomState.id} />
       </Header>
+      <Toasts socket={socket} callback={kickPlayer} />
       {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} />}
       <GridOfWords gameState={gameState} isChameleon={isChameleon} />
 

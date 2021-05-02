@@ -1,9 +1,10 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import wordSheet from '../../consts/wordSheet';
+
+import styles from './game.module.scss';
 
 const differentClueBoards = Object.keys(wordSheet);
 
@@ -22,8 +23,21 @@ const HostOptions = ({ socket, roomState, gameState }) => {
     socket.emit('startGame');
   };
 
+  const kickPlayer = (playerName) => () => {
+    socket.emit('kickPlayer', playerName);
+  };
+
   return (
-    <div>
+    <section className={styles['host-options']}>
+      <h4>Host Options</h4>
+      <div>
+        Players:{' '}
+        {Object.keys(roomState.players).map((player) => (
+          <div onClick={kickPlayer(player)} key={player} title="Kick Player">
+            {player} X
+          </div>
+        ))}
+      </div>
       <Form>
         <Form.Row>
           <Form.Group as={Col} controlId="gridBoard">
@@ -38,9 +52,11 @@ const HostOptions = ({ socket, roomState, gameState }) => {
             </Form.Control>
           </Form.Group>
         </Form.Row>
-        <Button onClick={startGame}>Start Game</Button>
+        <Button onClick={startGame} disabled={inProgress}>
+          Start Game
+        </Button>
       </Form>
-    </div>
+    </section>
   );
 };
 

@@ -11,13 +11,14 @@ const toMatrix = (arr, width) =>
   );
 
 const gameColumns = ['', 'A', 'B', 'C', 'D'];
-const gameColumnsMobile = ['', 'A', 'B'];
+const gameColumnsMobile = ['A', 'B', 'C', 'D'];
 
 const GridOfWords = ({ gameState, isChameleon }) => {
   const { grid, gridTitle, keyWord } = gameState;
   const isMobile = useIsMobile();
   const [showTable, setShowTable] = useState(true);
-  const fourByFour = useMemo(() => toMatrix(grid, isMobile ? 2 : 4), [grid, isMobile]);
+  // const fourByFour = useMemo(() => toMatrix(grid, isMobile ? 2 : 4), [grid, isMobile]);
+  const fourByFour = useMemo(() => toMatrix(grid, 4), [grid, isMobile]);
   const tableHeaders = isMobile ? gameColumnsMobile : gameColumns;
   return (
     <section className={styles['grid-of-words']}>
@@ -47,9 +48,9 @@ const GridOfWords = ({ gameState, isChameleon }) => {
             <tbody>
               {fourByFour.map((matrix, i) => (
                 <tr key={i}>
-                  <td className={styles['table-vertical']}>{i + 1}</td>
+                  {!isMobile && <td className={styles['table-vertical']}>{i + 1}</td>}
                   {matrix.map((word) => (
-                    <td key={word} className={keyWord === word && !isChameleon ? styles['key-word'] : ''}>
+                    <td key={word} className={keyWord === word && !isChameleon ? styles['key-word'] : null}>
                       {word}
                     </td>
                   ))}

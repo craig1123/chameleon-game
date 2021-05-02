@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import useSocket from '../../hooks/useSocket';
 import Header from '../Header';
-import Toasts from './Toasts';
+import Toasts from '../Toasts';
 import HostGame from './HostGame';
 import Room from './Room';
 
@@ -44,7 +44,7 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
   return (
     <>
       <Header />
-      <Toasts socket={socket} />
+      <Toasts socket={socket} callback={setRooms} />
       <Container className={styles['lobby-wrapper']}>
         <h3 className="h1">{playerName}</h3>
         <div className={styles['host-game']}>

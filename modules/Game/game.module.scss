@@ -1,5 +1,19 @@
 @import '../../styles/variables.scss';
 
+.host-options {
+  background: $yellow;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+
+  @media (min-width: $tablet) {
+    left: 10px;
+    position: absolute;
+    width: 300px;
+  }
+}
+
 .grid-of-words {
   margin: auto;
   max-width: 586px;
@@ -13,8 +27,21 @@
   position: relative;
   text-align: center;
 
+  h2 {
+    font-size: 28px;
+  }
   h5 {
+    font-size: 16px;
     margin: 0px;
+  }
+
+  @media (min-width: $tablet) {
+    h2 {
+      font-size: 32px;
+    }
+    h5 {
+      font-size: 18px;
+    }
   }
 }
 
@@ -33,7 +60,7 @@
 }
 
 .grid-table {
-  border: 5px solid #fff;
+  border: 2px solid #fff;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   text-align: center;
@@ -41,10 +68,9 @@
   td {
     background-color: #fff;
     border-color: transparent;
-    height: 60px;
-    padding: 0px;
+    font-size: 14px;
+    padding: 5px;
     vertical-align: middle;
-    width: 160px;
   }
 
   tr:nth-child(even) td:nth-child(odd),
@@ -61,8 +87,24 @@
     background-color: #fff !important;
     color: #6ad0ba;
     font-family: sans-serif;
-    font-size: 1.5rem;
+    font-size: 1rem;
     padding: 0.2rem 0.75rem;
     width: initial;
+  }
+
+  @media (min-width: $tablet) {
+    border: 5px solid #fff;
+
+    td {
+      font-size: 16px;
+      height: 60px;
+      padding: 0px;
+      width: 160px;
+    }
+
+    .table-vertical,
+    th {
+      font-size: 1.5rem;
+    }
   }
 }
