@@ -45,6 +45,7 @@ const active_grids = dev ? fakeActiveGrids : {};
 //   gridTitle: string,
 //   keyWord: string,
 //   chameleon: username,
+//   boardIsClickable: boolean
 //   players: {
 //     [username]: {
 //       clue: string,
@@ -105,6 +106,42 @@ function randomGrid() {
     gridTitle: gridTitle,
     grid: wordSheet[gridTitle],
   };
+}
+
+// did the chameleon escape
+function didChameleonEscape({ currentGrid }) {
+  // if all votes are cast count up the points
+  let chameleonEscapes = false;
+  // count up votes
+  const votes = {};
+  const players = Object.keys(currentGrid.players);
+  players.forEach((player) => {
+    const vote = currentGrid.players[player].vote;
+    if (votes[vote]) {
+      votes[vote]++;
+    } else {
+      votes[vote] = 1;
+    }
+  });
+  // find the highest vote
+  let highestNum = 0;
+  const highestVote = Object.keys(votes).reduce((a, b) => {
+    if (votes[a] === votes[b]) {
+      highestNum = 'tie';
+      return a;
+    }
+    if (votes[a] > votes[b]) {
+      highestNum = votes[a];
+      return a;
+    }
+    return b;
+  }, highestNum);
+
+  if (highestVote === currentGrid.chameleon || highestNum === 'tie') {
+    chameleonEscapes = true;
+  }
+
+  return chameleonEscapes;
 }
 
 // ======================
@@ -188,6 +225,7 @@ io.on('connection', function (socket) {
         gridTitle: newGrid.gridTitle,
         keyWord: '',
         chameleon: '',
+        boardIsClickable: false,
         players: {
           [username]: {
             clue: '',
@@ -227,6 +265,7 @@ io.on('connection', function (socket) {
     }
     const currentGrid = active_grids[roomId];
     rooms[roomId].inProgress = true;
+    active_grids[roomId].boardIsClickable = false;
     active_grids[roomId].keyWord = getRandomValue(currentGrid.grid);
     active_grids[roomId].chameleon = getRandomValue(Object.keys(currentGrid.players));
     active_grids[roomId].players = Object.keys(currentGrid.players).reduce(
@@ -258,7 +297,7 @@ io.on('connection', function (socket) {
   socket.on('updateVote', function (playerVote) {
     const currentGrid = active_grids[roomId];
     const currentRoom = rooms[roomId];
-    if (!active_grids[roomId] || !username) {
+    if (!currentGrid || !username) {
       return;
     }
     active_grids[roomId].players[username].vote = playerVote;
@@ -270,48 +309,87 @@ io.on('connection', function (socket) {
       return;
     }
 
-    // if all votes are cast, end the game and count up the points
-    rooms[roomId].inProgress = false;
-    let chameleonEscapes = false;
-    // count up votes
-    const votes = {};
-    Object.keys(currentGrid.players).forEach((player) => {
-      const vote = currentGrid.players[player].vote;
-      if (votes[vote]) {
-        votes[vote]++;
-      } else {
-        votes[vote] = 1;
-      }
-    });
-    // find the highest vote
-    let highestNum = 0;
-    const highestVote = Object.keys(votes).reduce((a, b) => {
-      if (votes[a] === votes[b]) {
-        highestNum = 'tie';
-        return a;
-      }
-      if (votes[a] > votes[b]) {
-        highestNum = votes[a];
-        return a;
-      }
-      return b;
-    }, highestNum);
+    const chameleonEscapes = didChameleonEscape(currentGrid);
 
-    if (highestVote === currentGrid.chameleon || highestNum === 'tie') {
-      chameleonEscapes = true;
+    // if he doesn't escape, the chameleon has a chance at 1 point
+    if (!chameleonEscapes) {
+      io.in(roomId).emit(
+        'toaster',
+        {
+          title: 'Congrats!',
+          message: `The chameleon was found! ${currentGrid.chameleon} now gets a chance to pick the correct clue.`,
+        },
+        { key: 'chameleonFound' }
+      );
+
+      active_grids[roomId].boardIsClickable = true;
+      io.in(roomId).emit('updateRoom', { gameState: active_grids[roomId] });
+      return;
     }
 
-    // add scores
-    Object.keys(currentGrid.players).forEach((player) => {
-      if (currentGrid.chameleon === player && chameleonEscapes) {
+    // end game and add scores
+    rooms[roomId].inProgress = false;
+
+    Object.keys(currentRoom).forEach((player) => {
+      if (currentGrid.chameleon === player) {
+        // chameleon gets 2 points
+        rooms[roomId].players[player] = currentRoom.players[player] + 2;
         return;
       }
-      if (currentGrid.players[player].vote === currentGrid.chameleon) {
+      // if you voted for the chameleon, even though he escaped, you get a point
+      if (currentRoom.pointsForGuessing && currentGrid.players[player].vote === currentGrid.chameleon) {
+        rooms[roomId].players[player] = currentRoom.players[player] + 1;
       }
     });
-    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
 
-    // if chameleon got away, toast it
+    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
+    io.in(roomId).emit(
+      'toaster',
+      {
+        title: 'Oh no!',
+        message: `The chameleon has escaped! Congrats to ${currentGrid.chameleon} and better luck next time for everyone else.`,
+      },
+      { key: 'chameleonEscaped' }
+    );
+  });
+
+  socket.on('chameleonGuesses', function (word) {
+    const currentGrid = active_grids[roomId];
+    const currentRoom = rooms[roomId];
+    if (!currentGrid || !username) {
+      return;
+    }
+    const { chameleon } = currentGrid;
+
+    if (word === currentGrid.keyWord) {
+      io.in(roomId).emit(
+        'toaster',
+        {
+          title: 'Nice!',
+          message: `The chameleon guessed the correct word. Congrats to ${chameleon} and better luck next time for everyone else.`,
+        },
+        { key: 'correctWord' }
+      );
+      rooms[roomId].players[chameleon] = currentRoom.players[chameleon] + 1;
+    } else {
+      io.in(roomId).emit(
+        'toaster',
+        {
+          title: 'Wrong',
+          message: `The chameleon guessed the wrong word. +1 for everyone else. Host ${currentRoom.host} needs to press "Start Game" to keep playing`,
+        },
+        { key: 'wrongWord' }
+      );
+      Object.keys(currentRoom.players).forEach((player) => {
+        if (chameleon !== player) {
+          // everyone but the chameleon gets a point
+          rooms[roomId].players[player] = currentRoom.players[player] + 1;
+          return;
+        }
+      });
+    }
+
+    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });
 
   // HOST OPTIONS
@@ -319,7 +397,7 @@ io.on('connection', function (socket) {
     io.in(roomId).emit(
       'toaster',
       { title: 'Kicked Player', message: `Player ${playerName} was kicked from the room` },
-      playerName
+      { key: 'kickPlayer', playerName }
     );
   });
 

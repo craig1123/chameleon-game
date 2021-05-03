@@ -38,8 +38,17 @@
 
 .grid-of-words {
   margin: auto;
+  min-width: 310px;
   max-width: 586px;
   margin-bottom: 1rem;
+
+  @media (min-width: $small-mobile) {
+    min-width: 350px;
+  }
+
+  @media (min-width: $tablet) {
+    min-width: 550px;
+  }
 }
 
 .table-title {
@@ -105,6 +114,19 @@
     border: 5px solid $purple;
   }
 
+  td.glowing-cells {
+    animation: pulsate 4s ease-in-out infinite;
+    cursor: pointer;
+
+    &:hover {
+      animation: pulsate 4s ease-in-out infinite;
+      opacity: 0.8;
+    }
+    &:active {
+      opacity: 1;
+    }
+  }
+
   .table-vertical,
   th {
     background-color: #fff !important;
@@ -129,6 +151,18 @@
     th {
       font-size: 1.5rem;
     }
+  }
+}
+
+@keyframes pulsate {
+  0% {
+    box-shadow: 0 0 1px purple;
+  }
+  50% {
+    box-shadow: 0 0 7px purple;
+  }
+  100% {
+    box-shadow: 0 0 1px purple;
   }
 }
 

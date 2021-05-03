@@ -69,13 +69,18 @@ const HostGame = ({ onHide, show, socket }) => {
           </Form.Group>
           <Form.Group as={Row} controlId="chameleonSeeClues">
             <Col>
-              <Form.Check name="chameleonSeeClues" label="Chameleon can see one random player's clue while typing" />
+              <Form.Check
+                defaultChecked
+                name="chameleonSeeClues"
+                label="Chameleon can see one random player's clue while typing"
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="pointsForGuessing">
             <Col>
               <Form.Check
                 name="pointsForGuessing"
+                defaultChecked
                 label="Player gets 1 point for guessing chameleon when not in majority"
               />
             </Col>

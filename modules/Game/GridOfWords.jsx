@@ -13,12 +13,30 @@ const toMatrix = (arr, width) =>
 const gameColumns = ['', 'A', 'B', 'C', 'D'];
 const gameColumnsMobile = ['A', 'B', 'C', 'D'];
 
-const GridOfWords = ({ gameState, isChameleon }) => {
-  const { grid, gridTitle, keyWord } = gameState;
+const GridOfWords = ({ socket, gameState, isChameleon }) => {
+  const { grid, gridTitle, keyWord, boardIsClickable } = gameState;
   const isMobile = useIsMobile();
   const [showTable, setShowTable] = useState(true);
   const fourByFour = useMemo(() => toMatrix(grid, 4), [grid]);
   const tableHeaders = isMobile ? gameColumnsMobile : gameColumns;
+  const canClickCells = boardIsClickable && isChameleon;
+
+  const handleCellClick = (word) => async () => {
+    if (!canClickCells) {
+      return;
+    }
+
+    if (word === keyWord) {
+      const party = await import('party-js');
+      const clueTable = document.getElementById('clue-table');
+      party.sparkles(clueTable, {
+        count: 100,
+      });
+    }
+
+    socket.emit('chameleonGuesses', word);
+  };
+
   return (
     <section className={styles['grid-of-words']}>
       <div className={styles['table-title']}>
@@ -49,7 +67,13 @@ const GridOfWords = ({ gameState, isChameleon }) => {
                 <tr key={i}>
                   {!isMobile && <td className={styles['table-vertical']}>{i + 1}</td>}
                   {matrix.map((word) => (
-                    <td key={word} className={keyWord === word && !isChameleon ? styles['key-word'] : null}>
+                    <td
+                      onClick={handleCellClick(word)}
+                      key={word}
+                      className={`${keyWord === word && !isChameleon ? styles['key-word'] : ''} ${
+                        canClickCells ? styles['glowing-cells'] : ''
+                      }`}
+                    >
                       {word}
                     </td>
                   ))}
