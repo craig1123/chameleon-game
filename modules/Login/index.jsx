@@ -72,7 +72,7 @@ const Login = ({ socket }) => {
           </div>
           <div style={svgWrapper}>
             <Players style={svgStyles} />
-            <p>3 - 8 Players</p>
+            <p>3 - 10 Players</p>
           </div>
           <div style={svgWrapper}>
             <RecommendedAge style={svgStyles} />
