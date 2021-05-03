@@ -26,13 +26,14 @@ const Game = ({ socket, activeGame, room }) => {
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (socket) {
         socket.emit('leaveRoom');
       }
-    };
-  }, []);
+    },
+    []
+  );
 
   useSocket(socket, 'updateRoom', (state) => {
     if (state.roomState) {

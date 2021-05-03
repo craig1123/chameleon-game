@@ -1,0 +1,20 @@
+@import '../../styles/variables.scss';
+
+.wrapper {
+  background-color: $yellow;
+  margin-top: 50px;
+  padding: 20px;
+}
+
+.svgWrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.svgContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}

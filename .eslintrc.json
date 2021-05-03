@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "babel-eslint",
-  "extends": ["airbnb"],
+  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
   "env": {
     "browser": true
   },
@@ -17,6 +17,7 @@
     "react/state-in-constructor": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "no-plusplus": "off",
+    "max-len": "off",
     "no-underscore-dangle": "off",
     "prefer-promise-reject-errors": "off"
   }

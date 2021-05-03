@@ -10,23 +10,7 @@ import Clock from '../SVG/Clock';
 import Players from '../SVG/Players';
 import RecommendedAge from '../SVG/Age';
 
-const wrapper = {
-  backgroundColor: 'rgb(227, 226, 108)',
-  marginTop: '50px',
-  padding: '20px',
-};
-const svgStyles = {
-  height: '100px',
-  width: '100px',
-};
-const svgWrapper = {
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-};
-const svgWrapperWrapper = {
-  display: 'flex',
-};
+import styles from './login.module.scss';
 
 const Login = ({ socket }) => {
   const [name, setName] = useState(() => Cookies.get('playerName') || '');
@@ -48,10 +32,10 @@ const Login = ({ socket }) => {
   });
 
   return (
-    <Container style={wrapper}>
+    <Container className={styles.wrapper}>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="login-name">
-          <Form.Label>Username</Form.Label>
+          <Form.Label>Player Name</Form.Label>
           <Form.Control
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -65,38 +49,37 @@ const Login = ({ socket }) => {
         <Button type="submit" variant="primary" size="large">
           Enter Lobby
         </Button>
-        <div style={svgWrapperWrapper}>
-          <div style={svgWrapper}>
-            <Clock style={svgStyles} />
+        <div className={styles.svgContainer}>
+          <div className={styles.svgWrapper}>
+            <Clock />
             <p>15 mins</p>
           </div>
-          <div style={svgWrapper}>
-            <Players style={svgStyles} />
-            <p>3 - 8 Players</p>
+          <div className={styles.svgWrapper}>
+            <Players className={styles.svg} />
+            <p>3 - 10 Players</p>
           </div>
-          <div style={svgWrapper}>
-            <RecommendedAge style={svgStyles} />
+          <div className={styles.svgWrapper}>
+            <RecommendedAge className={styles.svg} />
             <p>Age 14+</p>
-          </div>
-          <div style={svgWrapper}>
-            <span style={svgStyles} />
-            <a
-              href="https://www.youtube.com/watch?v=3IEEUcG0nSo"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              How to play?
-            </a>
-          </div>
-          <div style={svgWrapper}>
-            <span style={svgStyles} />
-            <a href="/the-chameleon-rules.pdf" target="_blank" rel="noopener noreferrer">
-              PDF rules
-            </a>
           </div>
         </div>
       </Form>
-      {/* Todo: put disclaimer below */}
+      <a href="https://www.youtube.com/watch?v=3IEEUcG0nSo" target="_blank" rel="noopener noreferrer">
+        How to play?
+      </a>
+      <br />
+      <a href="/the-chameleon-rules.pdf" target="_blank" rel="noopener noreferrer">
+        PDF of the rules
+      </a>
+      <section>
+        <h2>Disclaimer</h2>
+        <p>
+          This is a non-profit project made by a Craigular Joe and some friends out of pure love for the original game.
+          It is an adaptation of The Chameleon and provides ease of play/access while maintaining the overall idea. The
+          project is not affiliated with any of the official publishers of The Chameleon in any way. If you are the
+          official publishers, please get in touch with us as we would love to further advance the game with you :)
+        </p>
+      </section>
     </Container>
   );
 };

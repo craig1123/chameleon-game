@@ -44,6 +44,7 @@ const GridOfWords = ({ socket, gameState, isChameleon }) => {
           onClick={() => setShowTable(!showTable)}
           aria-controls="clue-table"
           aria-expanded={showTable}
+          type="button"
           title={showTable ? 'Collapse table' : 'Show table'}
           className={`${styles['arrow-collapse']} ${showTable ? styles['upsideDown'] : ''}`}
         >

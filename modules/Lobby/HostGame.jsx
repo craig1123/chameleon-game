@@ -44,7 +44,7 @@ const HostGame = ({ onHide, show, socket }) => {
   return (
     <Modal onHide={onClose} show={show} animation={false} size="md" aria-labelledby="host-preferences-title" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="host-preferences-title">Game Preferences (optional)</Modal.Title>
+        <Modal.Title id="host-preferences-title">Game Preferences</Modal.Title>
       </Modal.Header>
       <Form onSubmit={hostRoom}>
         <Modal.Body>
