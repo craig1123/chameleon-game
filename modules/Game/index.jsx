@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import useSocket from '../../hooks/useSocket';
 import { usePlayer } from '../../context/player';
 import Header from '../Header';
@@ -8,6 +10,7 @@ import Toasts from '../Toasts';
 import GridOfWords from './GridOfWords';
 import HostOptions from './HostOptions';
 import GameId from './GameId';
+import Players from './Players';
 
 import styles from './game.module.scss';
 
@@ -20,7 +23,9 @@ const Game = ({ socket, activeGame, room }) => {
 
   useEffect(() => {
     return () => {
-      socket.emit('leaveRoom');
+      if (socket) {
+        socket.emit('leaveRoom');
+      }
     };
   }, []);
 
@@ -28,7 +33,6 @@ const Game = ({ socket, activeGame, room }) => {
     if (state.roomState) {
       setRoomState(state.roomState);
     }
-    console.log(state);
     if (state.gameState) {
       setGameState(state.gameState);
     }
@@ -52,14 +56,24 @@ const Game = ({ socket, activeGame, room }) => {
     <>
       <Header showConnection={false}>
         <GameId roomId={roomState.id} />
+        <button type="button" onClick={leaveRoom} className={styles['leave-room']}>
+          &#8592; Leave Room
+        </button>
       </Header>
       <Toasts socket={socket} callback={kickPlayer} />
       <div className={styles.relative}>
         <Container>
-          <GridOfWords gameState={gameState} isChameleon={isChameleon} />
-          {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} players={players} />}
-
-          {/* player options, leave game. */}
+          <Row>
+            <Col>
+              <Players socket={socket} gameState={gameState} players={players} roomState={roomState} />
+            </Col>
+            <GridOfWords gameState={gameState} isChameleon={isChameleon} />
+          </Row>
+          <Row>
+            <Col>
+              {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} players={players} />}
+            </Col>
+          </Row>
         </Container>
       </div>
     </>

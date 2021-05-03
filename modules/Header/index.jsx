@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Children, Fragment } from 'react';
 import { usePlayer } from '../../context/player';
-import GameId from '../Game/GameId';
 
 import styles from './header.module.scss';
 
@@ -10,7 +9,6 @@ const Header = ({ children, showConnection = true }) => {
 
   return (
     <>
-      <div className={styles['header-fill']} />
       <header className={styles.header}>
         <div className={styles['header-col']}>
           <div className={styles['header-connection']}>
@@ -22,12 +20,13 @@ const Header = ({ children, showConnection = true }) => {
                 <span className={styles['connection-label']}>Players online: {playersOnline}</span>
               </>
             )}
-            {children && (
-              <>
-                <span className={styles['header-separator']}></span>
-                {children}
-              </>
-            )}
+            {children &&
+              Children.map(children, (child, i) => (
+                <Fragment key={i}>
+                  <span className={styles['header-separator']}></span>
+                  {child}
+                </Fragment>
+              ))}
           </div>
         </div>
       </header>
