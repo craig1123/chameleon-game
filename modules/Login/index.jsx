@@ -6,10 +6,26 @@ import Container from 'react-bootstrap/Container';
 import useSocket from '../../hooks/useSocket';
 import Cookies from 'js-cookie';
 
+import Clock from '../SVG/Clock';
+import Players from '../SVG/Players';
+import RecommendedAge from '../SVG/Age';
+
 const wrapper = {
   backgroundColor: 'rgb(227, 226, 108)',
   marginTop: '50px',
   padding: '20px',
+};
+const svgStyles = {
+  height: '100px',
+  width: '100px',
+};
+const svgWrapper = {
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+};
+const svgWrapperWrapper = {
+  display: 'flex',
 };
 
 const Login = ({ socket }) => {
@@ -49,11 +65,31 @@ const Login = ({ socket }) => {
         <Button type="submit" variant="primary" size="large">
           Enter Lobby
         </Button>
-        <div style={{ float: 'right' }}>
-          <a href="https://www.youtube.com/watch?v=3IEEUcG0nSo" target="_blank" rel="noopener noreferrer">
-            How to play?
-          </a>
-          <div>
+        <div style={svgWrapperWrapper}>
+          <div style={svgWrapper}>
+            <Clock style={svgStyles} />
+            <p>15 mins</p>
+          </div>
+          <div style={svgWrapper}>
+            <Players style={svgStyles} />
+            <p>3 - 8 Players</p>
+          </div>
+          <div style={svgWrapper}>
+            <RecommendedAge style={svgStyles} />
+            <p>Age 14+</p>
+          </div>
+          <div style={svgWrapper}>
+            <span style={svgStyles} />
+            <a
+              href="https://www.youtube.com/watch?v=3IEEUcG0nSo"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How to play?
+            </a>
+          </div>
+          <div style={svgWrapper}>
+            <span style={svgStyles} />
             <a href="/the-chameleon-rules.pdf" target="_blank" rel="noopener noreferrer">
               PDF rules
             </a>
