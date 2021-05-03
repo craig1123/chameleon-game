@@ -33,15 +33,12 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
 
   return (
     <section className={styles['host-options']}>
-      <h4>Host Options</h4>
-      <div>
-        Players:{' '}
-        {players.map((player) => (
-          <div onClick={kickPlayer(player)} key={player} title="Kick Player" style={{ cursor: 'pointer' }}>
-            {player} X
-          </div>
-        ))}
-      </div>
+      <h4 className="marker">Host Options</h4>
+      <Button onClick={startGame} disabled={inProgress || players.length < 3}>
+        Start Game
+      </Button>
+      <br />
+      <br />
       <Form>
         <Form.Row>
           <Form.Group as={Col} controlId="gridBoard">
@@ -55,10 +52,15 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
             </Form.Control>
           </Form.Group>
         </Form.Row>
-        <Button onClick={startGame} disabled={inProgress || players.length < 3}>
-          Start Game
-        </Button>
       </Form>
+      <h5>Click on player to kick:</h5>
+      <div className={styles['kick-players']}>
+        {players.map((player) => (
+          <div onClick={kickPlayer(player)} key={player} className={styles['player-to-kick']}>
+            {player}
+          </div>
+        ))}
+      </div>
     </section>
   );
 };

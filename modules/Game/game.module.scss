@@ -4,9 +4,42 @@
   position: relative;
 }
 
+.leave-room {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.players {
+  background: $yellow;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 5px;
+  margin-bottom: 1rem;
+  width: 100%;
+
+  @media (min-width: $small-desktop) {
+    font-size: 16px;
+  }
+
+  table {
+    table-layout: auto;
+    th {
+      color: $blue;
+    }
+  }
+}
+
+.player-chameleon {
+  background-color: $green;
+  color: #fff;
+}
+
 .grid-of-words {
   margin: auto;
   max-width: 586px;
+  margin-bottom: 1rem;
 }
 
 .table-title {
@@ -99,6 +132,19 @@
   }
 }
 
+.player-options {
+  background: $yellow;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+
+  h4 {
+    color: $blue;
+    text-align: center;
+  }
+}
+
 .host-options {
   background: $yellow;
   border-radius: 5px;
@@ -106,13 +152,19 @@
   margin-bottom: 1rem;
   text-align: center;
 
-  @media (min-width: $small-desktop) {
-    border-radius: 0px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    left: 0px;
-    position: absolute;
-    top: 20px;
-    width: 300px;
+  h4 {
+    color: $blue;
+    text-align: center;
   }
+}
+
+.kick-players {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.player-to-kick {
+  cursor: pointer;
+  margin: 0px 5px;
 }

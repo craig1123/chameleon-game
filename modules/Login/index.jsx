@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { getLocalStorageItem } from '../../hooks/useLocalStorage';
 import useSocket from '../../hooks/useSocket';
 import Cookies from 'js-cookie';
 
@@ -86,6 +86,12 @@ const Login = ({ socket }) => {
               rel="noopener noreferrer"
             >
               How to play?
+            </a>
+          </div>
+          <div style={svgWrapper}>
+            <span style={svgStyles} />
+            <a href="/the-chameleon-rules.pdf" target="_blank" rel="noopener noreferrer">
+              PDF rules
             </a>
           </div>
         </div>
