@@ -23,7 +23,6 @@ const Game = ({ socket, activeGame, room }) => {
   const [gameState, setGameState] = useState(activeGame);
   const players = Object.keys(roomState.players);
   const allCluesReady = Object.keys(gameState.players).every((player) => gameState.players[player].clueReady);
-  const allVotesCast = Object.keys(gameState.players).every((player) => !!gameState.players[player].vote);
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
 
@@ -54,6 +53,45 @@ const Game = ({ socket, activeGame, room }) => {
     }
   };
 
+  const throwConfetti = async () => {
+    const party = await import('party-js');
+    let times = 0;
+    const interval = setInterval(() => {
+      party.confetti(document.body, {
+        count: 100,
+      });
+      times++;
+      if (times === 2) {
+        clearInterval(interval);
+      }
+    }, 2000);
+  };
+
+  const handleToasts = (args) => {
+    switch (args) {
+      case 'wrongWord': {
+        if (username !== gameState.chameleon) {
+          throwConfetti();
+        }
+        break;
+      }
+      case 'correctWord':
+      case 'chameleonEscaped': {
+        if (username === gameState.chameleon) {
+          throwConfetti();
+        }
+        break;
+      }
+      case 'kickPlayer': {
+        kickPlayer(args.playerName);
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <Header showConnection={false}>
@@ -64,7 +102,7 @@ const Game = ({ socket, activeGame, room }) => {
           </button>
         )}
       </Header>
-      <Toasts socket={socket} callback={kickPlayer} />
+      <Toasts socket={socket} callback={handleToasts} />
       <div className={styles.relative}>
         <Container>
           <Row>
@@ -76,7 +114,7 @@ const Game = ({ socket, activeGame, room }) => {
                 allCluesReady={allCluesReady}
               />
             </Col>
-            <GridOfWords gameState={gameState} isChameleon={isChameleon} />
+            <GridOfWords socket={socket} gameState={gameState} isChameleon={isChameleon} />
           </Row>
           <Row>
             <Col>

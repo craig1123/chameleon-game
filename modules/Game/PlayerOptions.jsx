@@ -7,11 +7,12 @@ import { usePlayer } from '../../context/player';
 import styles from './game.module.scss';
 
 const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady }) => {
-  const [clue, setClue] = useState(() => gameState.players?.[username]?.clue || '');
   const { playerState } = usePlayer();
   const { username } = playerState;
+  const [clue, setClue] = useState(() => gameState.players?.[username]?.clue || '');
   const { inProgress } = roomState;
   const playerOptions = players.filter((player) => player !== username);
+  const clueReady = gameState.players?.[username]?.clueReady || false;
 
   const handleClueChange = (e) => {
     setClue(e.target.value);
@@ -44,14 +45,14 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
         <Form.Row>
           <Form.Group as={Col} controlId="clue">
             <Form.Label>Word Clue</Form.Label>
-            <Form.Control value={clue} disabled={allCluesReady} name="clue" onChange={handleClueChange} />
+            <Form.Control value={clue} disabled={allCluesReady || clueReady} name="clue" onChange={handleClueChange} />
           </Form.Group>
 
           <Form.Group as={Col} controlId="clueReady">
             <Form.Label />
             <Form.Check
               onChange={handleClueReady}
-              checked={gameState.players?.[username]?.clueReady || false}
+              checked={clueReady}
               label="Clue Ready?"
               name="clueReady"
               disabled={allCluesReady}
