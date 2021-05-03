@@ -10,7 +10,8 @@ import Toasts from '../Toasts';
 import GridOfWords from './GridOfWords';
 import HostOptions from './HostOptions';
 import GameId from './GameId';
-import Players from './Players';
+import PlayersGrid from './PlayersGrid';
+import PlayerOptions from './PlayerOptions';
 
 import styles from './game.module.scss';
 
@@ -20,6 +21,11 @@ const Game = ({ socket, activeGame, room }) => {
   const { username } = playerState;
   const [roomState, setRoomState] = useState(room);
   const [gameState, setGameState] = useState(activeGame);
+  const players = Object.keys(roomState.players);
+  const allCluesReady = Object.keys(gameState.players).every((player) => gameState.players[player].clueReady);
+  const allVotesCast = Object.keys(gameState.players).every((player) => !!gameState.players[player].vote);
+  const isChameleon = username === gameState.chameleon;
+  const isHost = username === roomState.host;
 
   useEffect(() => {
     return () => {
@@ -48,26 +54,40 @@ const Game = ({ socket, activeGame, room }) => {
     }
   };
 
-  const players = Object.keys(roomState.players);
-  const isChameleon = username === gameState.chameleon;
-  const isHost = username === roomState.host;
-
   return (
     <>
       <Header showConnection={false}>
         <GameId roomId={roomState.id} />
-        <button type="button" onClick={leaveRoom} className={styles['leave-room']}>
-          &#8592; Leave Room
-        </button>
+        {!roomState.inProgress && (
+          <button type="button" onClick={leaveRoom} className={styles['leave-room']}>
+            &#8592; Leave Room
+          </button>
+        )}
       </Header>
       <Toasts socket={socket} callback={kickPlayer} />
       <div className={styles.relative}>
         <Container>
           <Row>
             <Col>
-              <Players socket={socket} gameState={gameState} players={players} roomState={roomState} />
+              <PlayersGrid
+                gameState={gameState}
+                players={players}
+                roomState={roomState}
+                allCluesReady={allCluesReady}
+              />
             </Col>
             <GridOfWords gameState={gameState} isChameleon={isChameleon} />
+          </Row>
+          <Row>
+            <Col>
+              <PlayerOptions
+                socket={socket}
+                roomState={roomState}
+                gameState={gameState}
+                players={players}
+                allCluesReady={allCluesReady}
+              />
+            </Col>
           </Row>
           <Row>
             <Col>

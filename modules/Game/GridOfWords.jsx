@@ -17,8 +17,7 @@ const GridOfWords = ({ gameState, isChameleon }) => {
   const { grid, gridTitle, keyWord } = gameState;
   const isMobile = useIsMobile();
   const [showTable, setShowTable] = useState(true);
-  // const fourByFour = useMemo(() => toMatrix(grid, isMobile ? 2 : 4), [grid, isMobile]);
-  const fourByFour = useMemo(() => toMatrix(grid, 4), [grid, isMobile]);
+  const fourByFour = useMemo(() => toMatrix(grid, 4), [grid]);
   const tableHeaders = isMobile ? gameColumnsMobile : gameColumns;
   return (
     <section className={styles['grid-of-words']}>

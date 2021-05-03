@@ -32,7 +32,7 @@
 }
 
 .player-chameleon {
-  background-color: $purple;
+  background-color: $green;
   color: #fff;
 }
 
@@ -129,6 +129,19 @@
     th {
       font-size: 1.5rem;
     }
+  }
+}
+
+.player-options {
+  background: $yellow;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+
+  h4 {
+    color: $blue;
+    text-align: center;
   }
 }
 

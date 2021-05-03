@@ -5,6 +5,7 @@ const next = require('next');
 const wordSheet = require('./consts/wordSheet.js');
 const fakeRooms = require('./consts/fakeRooms.js');
 const fakeActiveGrids = require('./consts/fakeActiveGrids');
+const { InputGroup } = require('react-bootstrap');
 // const cluster = require('cluster');
 // const numCPUs = require('os').cpus().length;
 // for scaling if we need more CPU cores https://github.com/mars/heroku-nextjs-custom-server-express/blob/master/server.js
@@ -240,6 +241,77 @@ io.on('connection', function (socket) {
       {}
     );
     io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
+  });
+
+  // Game ends. Add the points
+  // PLAYER OPTIONS
+  socket.on('updatePlayerOption', function (options) {
+    if (!active_grids[roomId] || !username) {
+      return;
+    }
+    options.forEach(({ optionName, value }) => {
+      active_grids[roomId].players[username][optionName] = value;
+    });
+    io.in(roomId).emit('updateRoom', { gameState: active_grids[roomId] });
+  });
+
+  socket.on('updateVote', function (playerVote) {
+    const currentGrid = active_grids[roomId];
+    const currentRoom = rooms[roomId];
+    if (!active_grids[roomId] || !username) {
+      return;
+    }
+    active_grids[roomId].players[username].vote = playerVote;
+    const allVotesCast = Object.keys(active_grids[roomId].players).every((player) => !!gameState.players[player].vote);
+
+    // update vote
+    if (!allVotesCast) {
+      io.in(roomId).emit('updateRoom', { gameState: active_grids[roomId] });
+      return;
+    }
+
+    // if all votes are cast, end the game and count up the points
+    rooms[roomId].inProgress = false;
+    let chameleonEscapes = false;
+    // count up votes
+    const votes = {};
+    Object.keys(currentGrid.players).forEach((player) => {
+      const vote = currentGrid.players[player].vote;
+      if (votes[vote]) {
+        votes[vote]++;
+      } else {
+        votes[vote] = 1;
+      }
+    });
+    // find the highest vote
+    let highestNum = 0;
+    const highestVote = Object.keys(votes).reduce((a, b) => {
+      if (votes[a] === votes[b]) {
+        highestNum = 'tie';
+        return a;
+      }
+      if (votes[a] > votes[b]) {
+        highestNum = votes[a];
+        return a;
+      }
+      return b;
+    }, highestNum);
+
+    if (highestVote === currentGrid.chameleon || highestNum === 'tie') {
+      chameleonEscapes = true;
+    }
+
+    // add scores
+    Object.keys(currentGrid.players).forEach((player) => {
+      if (currentGrid.chameleon === player && chameleonEscapes) {
+        return;
+      }
+      if (currentGrid.players[player].vote === currentGrid.chameleon) {
+      }
+    });
+    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
+
+    // if chameleon got away, toast it
   });
 
   // HOST OPTIONS

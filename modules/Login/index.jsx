@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { getLocalStorageItem } from '../../hooks/useLocalStorage';
 import useSocket from '../../hooks/useSocket';
 import Cookies from 'js-cookie';
 
@@ -49,14 +49,16 @@ const Login = ({ socket }) => {
         <Button type="submit" variant="primary" size="large">
           Enter Lobby
         </Button>
-        <a
-          href="https://www.youtube.com/watch?v=3IEEUcG0nSo"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ float: 'right' }}
-        >
-          How to play?
-        </a>
+        <div style={{ float: 'right' }}>
+          <a href="https://www.youtube.com/watch?v=3IEEUcG0nSo" target="_blank" rel="noopener noreferrer">
+            How to play?
+          </a>
+          <div>
+            <a href="/the-chameleon-rules.pdf" target="_blank" rel="noopener noreferrer">
+              PDF rules
+            </a>
+          </div>
+        </div>
       </Form>
       {/* Todo: put disclaimer below */}
     </Container>
