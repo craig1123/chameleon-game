@@ -1,5 +1,6 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import wordSheet from '../../consts/wordSheet';
@@ -17,7 +18,7 @@ const differentClueBoards = Object.keys(wordSheet);
  */
 const HostOptions = ({ socket, roomState, gameState, players }) => {
   const { gridTitle } = gameState;
-  const { inProgress } = roomState;
+  const { inProgress, pointsForGuessing, chameleonSeeClues, privateRoom } = roomState;
 
   const startGame = () => {
     socket.emit('startGame');
@@ -29,6 +30,10 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
 
   const changeGrid = (e) => {
     socket.emit('changeGrid', e.target.value);
+  };
+
+  const changeHostOption = (e) => {
+    socket.emit('changeRoomOptions', { name: e.target.name, value: e.target.checked });
   };
 
   return (
@@ -50,6 +55,34 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
                 </option>
               ))}
             </Form.Control>
+          </Form.Group>
+          <Form.Group as={Col} controlId="chameleonSeeClues">
+            <Form.Check
+              checked={chameleonSeeClues}
+              onChange={changeHostOption}
+              name="chameleonSeeClues"
+              label="Chameleon can see one random player's clue"
+            />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} controlId="pointsForGuessing">
+            <Form.Check
+              name="pointsForGuessing"
+              disabled={inProgress}
+              onChange={changeHostOption}
+              checked={pointsForGuessing}
+              label="Player gets 1 point for guessing chameleon when not in majority"
+            />
+          </Form.Group>
+          <Form.Group as={Col} controlId="privateRoom">
+            <Form.Check
+              label="Private Game"
+              name="privateRoom"
+              onChange={changeHostOption}
+              disabled={inProgress}
+              checked={privateRoom}
+            />
           </Form.Group>
         </Form.Row>
       </Form>

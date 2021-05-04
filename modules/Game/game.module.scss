@@ -182,7 +182,7 @@
 .host-options {
   background: $yellow;
   border-radius: 5px;
-  padding: 5px;
+  padding: 15px;
   margin-bottom: 1rem;
   text-align: center;
 
@@ -201,4 +201,8 @@
 .player-to-kick {
   cursor: pointer;
   margin: 0px 5px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }

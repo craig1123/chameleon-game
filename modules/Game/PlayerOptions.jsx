@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
@@ -9,13 +9,23 @@ import styles from './game.module.scss';
 const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady }) => {
   const { playerState } = usePlayer();
   const { username } = playerState;
+  const { inProgress, playerShowsClue } = roomState;
   const [clue, setClue] = useState(() => gameState.players?.[username]?.clue || '');
-  const { inProgress } = roomState;
   const playerOptions = players.filter((player) => player !== username);
   const clueReady = gameState.players?.[username]?.clueReady || false;
 
+  useEffect(() => {
+    if (inProgress) {
+      setClue('');
+    }
+  }, [inProgress]);
+
   const handleClueChange = (e) => {
-    setClue(e.target.value);
+    const value = e.target.value;
+    setClue(value);
+    if (playerShowsClue === username) {
+      socket.emit('updatePlayerOption', [{ optionName: 'clue', value: value }]);
+    }
   };
 
   const handleClueReady = (e) => {

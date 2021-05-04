@@ -46,6 +46,7 @@ const active_grids = dev ? fakeActiveGrids : {};
 //   keyWord: string,
 //   chameleon: username,
 //   boardIsClickable: boolean
+//   playerShowsClue: username
 //   players: {
 //     [username]: {
 //       clue: string,
@@ -225,6 +226,7 @@ io.on('connection', function (socket) {
         gridTitle: newGrid.gridTitle,
         keyWord: '',
         chameleon: '',
+        playerShowsClue: '',
         boardIsClickable: false,
         players: {
           [username]: {
@@ -260,15 +262,20 @@ io.on('connection', function (socket) {
 
   // host starts the game
   socket.on('startGame', function () {
-    if (!rooms[roomId]) {
+    const currentGrid = active_grids[roomId];
+    const currentRoom = rooms[roomId];
+    if (!currentRoom || !currentGrid) {
       return;
     }
-    const currentGrid = active_grids[roomId];
+    const players = Object.keys(currentGrid.players);
+    const chameleon = getRandomValue(players);
+    const restOfPlayers = players.filter((player) => player !== chameleon);
     rooms[roomId].inProgress = true;
     active_grids[roomId].boardIsClickable = false;
+    active_grids[roomId].playerShowsClue = currentRoom.chameleonSeeClues ? getRandomValue(restOfPlayers) : '';
     active_grids[roomId].keyWord = getRandomValue(currentGrid.grid);
-    active_grids[roomId].chameleon = getRandomValue(Object.keys(currentGrid.players));
-    active_grids[roomId].players = Object.keys(currentGrid.players).reduce(
+    active_grids[roomId].chameleon = chameleon;
+    active_grids[roomId].players = players.reduce(
       (prev, cur) => ({
         ...prev,
         [cur]: {
@@ -389,11 +396,15 @@ io.on('connection', function (socket) {
       });
     }
 
+    rooms[roomId].inProgress = false;
     io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });
 
   // HOST OPTIONS
   socket.on('kickPlayer', function (playerName) {
+    if (!rooms[roomId]) {
+      return;
+    }
     io.in(roomId).emit(
       'toaster',
       { title: 'Kicked Player', message: `Player ${playerName} was kicked from the room` },
@@ -402,12 +413,23 @@ io.on('connection', function (socket) {
   });
 
   socket.on('changeGrid', function (gameTitle) {
+    if (!active_grids[roomId]) {
+      return;
+    }
     const newGrid = gameTitle === 'random' ? randomGrid() : { gridTitle: gameTitle, grid: wordSheet[gameTitle] };
     active_grids[roomId].grid = newGrid.grid;
     active_grids[roomId].gridTitle = newGrid.gridTitle;
     active_grids[roomId].keyWord = '';
     active_grids[roomId].chameleon = '';
     io.in(roomId).emit('updateRoom', { gameState: active_grids[roomId] });
+  });
+
+  socket.on('changeRoomOptions', function ({ name, value }) {
+    if (!rooms[roomId]) {
+      return;
+    }
+    rooms[roomId][name] = value;
+    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId] });
   });
 });
 

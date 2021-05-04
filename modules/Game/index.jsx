@@ -113,6 +113,7 @@ const Game = ({ socket, activeGame, room }) => {
                 players={players}
                 roomState={roomState}
                 allCluesReady={allCluesReady}
+                isChameleon={isChameleon}
               />
             </Col>
             <GridOfWords socket={socket} gameState={gameState} isChameleon={isChameleon} />

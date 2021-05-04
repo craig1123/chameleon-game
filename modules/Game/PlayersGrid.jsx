@@ -2,8 +2,8 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import styles from './game.module.scss';
 
-const Players = ({ roomState, gameState, players, allCluesReady }) => {
-  const { inProgress } = roomState;
+const Players = ({ roomState, gameState, players, allCluesReady, isChameleon }) => {
+  const { inProgress, playerShowsClue } = roomState;
   return (
     <section className={styles.players}>
       <Table responsive size="sm" borderless>
@@ -24,7 +24,9 @@ const Players = ({ roomState, gameState, players, allCluesReady }) => {
             >
               <td>{player}</td>
               <td>{roomState.players[player]}</td>
-              <td>{allCluesReady ? gameState.players[player].clue : null}</td>
+              <td>
+                {allCluesReady || (isChameleon && playerShowsClue === player) ? gameState.players[player].clue : null}
+              </td>
               <td>{gameState.players[player].clueReady && <span>&#10004;</span>}</td>
               <td>{allCluesReady ? gameState.players[player].vote : null}</td>
             </tr>
