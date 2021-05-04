@@ -9,7 +9,7 @@ import styles from './game.module.scss';
 const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady }) => {
   const { playerState } = usePlayer();
   const { username } = playerState;
-  const { inProgress, playerShowsClue } = roomState;
+  const { inProgress, chameleonSeeClues } = roomState;
   const [clue, setClue] = useState(() => gameState.players?.[username]?.clue || '');
   const playerOptions = players.filter((player) => player !== username);
   const clueReady = gameState.players?.[username]?.clueReady || false;
@@ -23,7 +23,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
   const handleClueChange = (e) => {
     const value = e.target.value;
     setClue(value);
-    if (playerShowsClue === username) {
+    if (chameleonSeeClues && gameState.playerShowsClue === username) {
       socket.emit('updatePlayerOption', [{ optionName: 'clue', value: value }]);
     }
   };

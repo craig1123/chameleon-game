@@ -5,7 +5,6 @@ const next = require('next');
 const wordSheet = require('./consts/wordSheet.js');
 const fakeRooms = require('./consts/fakeRooms.js');
 const fakeActiveGrids = require('./consts/fakeActiveGrids');
-const { InputGroup } = require('react-bootstrap');
 // const cluster = require('cluster');
 // const numCPUs = require('os').cpus().length;
 // for scaling if we need more CPU cores https://github.com/mars/heroku-nextjs-custom-server-express/blob/master/server.js
@@ -110,7 +109,7 @@ function randomGrid() {
 }
 
 // did the chameleon escape
-function didChameleonEscape({ currentGrid }) {
+function didChameleonEscape(currentGrid) {
   // if all votes are cast count up the points
   let chameleonEscapes = false;
   // count up votes
@@ -318,7 +317,7 @@ io.on('connection', function (socket) {
       return;
     }
 
-    const chameleonEscapes = didChameleonEscape(currentGrid);
+    const chameleonEscapes = didChameleonEscape(active_grids[roomId]);
 
     // if he doesn't escape, the chameleon has a chance at 1 point
     if (!chameleonEscapes) {
@@ -346,7 +345,7 @@ io.on('connection', function (socket) {
         return;
       }
       // if you voted for the chameleon, even though he escaped, you get a point
-      if (currentRoom.pointsForGuessing && currentGrid.players[player].vote === currentGrid.chameleon) {
+      if (currentRoom.pointsForGuessing && active_grids[roomId].players[player].vote === currentGrid.chameleon) {
         rooms[roomId].players[player] = currentRoom.players[player] + 1;
       }
     });
