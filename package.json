@@ -12,6 +12,9 @@
   "engines": {
     "node": ">=14.15.5"
   },
+  "cacheDirectories": [
+    ".next/cache"
+  ],
   "dependencies": {
     "bootstrap": "^4.6.0",
     "express": "^4.17.1",
