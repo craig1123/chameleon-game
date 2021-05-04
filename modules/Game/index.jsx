@@ -19,10 +19,10 @@ const Game = ({ socket, activeGame, room }) => {
   const router = useRouter();
   const { playerState } = usePlayer();
   const { username } = playerState;
-  const [roomState, setRoomState] = useState(room);
-  const [gameState, setGameState] = useState(activeGame);
+  const [state, setState] = useState(() => ({ roomState: room, gameState: activeGame }));
+  const { roomState, gameState } = state;
   const players = Object.keys(roomState.players);
-  const allCluesReady = Object.keys(gameState.players).every((player) => gameState.players[player].clueReady);
+  const allCluesReady = Object.keys(gameState.players).every((player) => gameState.players[player]?.clueReady);
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
 
@@ -36,12 +36,10 @@ const Game = ({ socket, activeGame, room }) => {
   );
 
   useSocket(socket, 'updateRoom', (state) => {
-    if (state.roomState) {
-      setRoomState(state.roomState);
-    }
-    if (state.gameState) {
-      setGameState(state.gameState);
-    }
+    setState((prev) => ({
+      roomState: state.roomState || prev.roomState,
+      gameState: state.gameState || prev.gameState,
+    }));
   });
 
   const leaveRoom = () => {

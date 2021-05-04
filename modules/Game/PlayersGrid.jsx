@@ -27,7 +27,7 @@ const Players = ({ roomState, gameState, players, allCluesReady, isChameleon }) 
               <td>
                 {allCluesReady || (isChameleon && playerShowsClue === player) ? gameState.players[player].clue : null}
               </td>
-              <td>{gameState.players[player].clueReady && <span>&#10004;</span>}</td>
+              <td>{gameState.players[player]?.clueReady && <span>&#10004;</span>}</td>
               <td>{allCluesReady ? gameState.players[player].vote : null}</td>
             </tr>
           ))}
