@@ -53,12 +53,12 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
     <div className={styles['player-options']}>
       <Form>
         <Form.Row>
-          <Form.Group as={Col} controlId="clue">
+          <Form.Group as={Col} md="4" controlId="clue">
             <Form.Label>Word Clue</Form.Label>
             <Form.Control value={clue} disabled={allCluesReady || clueReady} name="clue" onChange={handleClueChange} />
           </Form.Group>
 
-          <Form.Group as={Col} controlId="clueReady">
+          <Form.Group as={Col} md="4" controlId="clueReady">
             <Form.Label />
             <Form.Check
               onChange={handleClueReady}
@@ -69,7 +69,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
             />
           </Form.Group>
 
-          <Form.Group as={Col} controlId="vote">
+          <Form.Group as={Col} md="4" controlId="vote">
             <Form.Label>Vote</Form.Label>
             <Form.Control
               as="select"

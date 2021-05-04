@@ -308,7 +308,9 @@ io.on('connection', function (socket) {
       return;
     }
     active_grids[roomId].players[username].vote = playerVote;
-    const allVotesCast = Object.keys(active_grids[roomId].players).every((player) => !!gameState.players[player].vote);
+    const allVotesCast = Object.keys(active_grids[roomId].players).every(
+      (player) => !!active_grids[roomId].players[player].vote
+    );
 
     // update vote
     if (!allVotesCast) {
