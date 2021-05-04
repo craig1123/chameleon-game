@@ -137,7 +137,7 @@ function didChameleonEscape(currentGrid) {
     return b;
   }, highestNum);
 
-  if (highestVote === currentGrid.chameleon || highestNum === 'tie') {
+  if (highestVote !== currentGrid.chameleon || highestNum === 'tie') {
     chameleonEscapes = true;
   }
 
@@ -302,7 +302,6 @@ io.on('connection', function (socket) {
 
   socket.on('updateVote', function (playerVote) {
     const currentGrid = active_grids[roomId];
-    const currentRoom = rooms[roomId];
     if (!currentGrid || !username) {
       return;
     }
@@ -338,15 +337,16 @@ io.on('connection', function (socket) {
     // end game and add scores
     rooms[roomId].inProgress = false;
 
-    Object.keys(currentRoom).forEach((player) => {
+    Object.keys(rooms[roomId].players).forEach((player) => {
       if (currentGrid.chameleon === player) {
         // chameleon gets 2 points
-        rooms[roomId].players[player] = currentRoom.players[player] + 2;
+        rooms[roomId].players[player] = rooms[roomId].players[player] + 2;
         return;
       }
+
       // if you voted for the chameleon, even though he escaped, you get a point
-      if (currentRoom.pointsForGuessing && active_grids[roomId].players[player].vote === currentGrid.chameleon) {
-        rooms[roomId].players[player] = currentRoom.players[player] + 1;
+      if (rooms[roomId].pointsForGuessing && active_grids[roomId].players[player].vote === currentGrid.chameleon) {
+        rooms[roomId].players[player] = rooms[roomId].players[player] + 1;
       }
     });
 

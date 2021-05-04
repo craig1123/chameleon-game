@@ -18,6 +18,7 @@ const Toasts = ({ socket, callback }) => {
         position: 'absolute',
         top: 10,
         right: 10,
+        zIndex: 10,
       }}
     >
       {toasts.map((toast, i) => (
@@ -25,7 +26,7 @@ const Toasts = ({ socket, callback }) => {
           autohide
           animation
           key={i}
-          delay={6000}
+          delay={10000}
           show={showToast}
           onClose={() => setToasts((prev) => prev.filter((_, j) => i !== j))}
         >

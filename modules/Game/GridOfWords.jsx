@@ -13,13 +13,13 @@ const toMatrix = (arr, width) =>
 const gameColumns = ['', 'A', 'B', 'C', 'D'];
 const gameColumnsMobile = ['A', 'B', 'C', 'D'];
 
-const GridOfWords = ({ socket, gameState, isChameleon }) => {
+const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
   const { grid, gridTitle, keyWord, boardIsClickable } = gameState;
   const isMobile = useIsMobile();
   const [showTable, setShowTable] = useState(true);
   const fourByFour = useMemo(() => toMatrix(grid, 4), [grid]);
   const tableHeaders = isMobile ? gameColumnsMobile : gameColumns;
-  const canClickCells = boardIsClickable && isChameleon;
+  const canClickCells = boardIsClickable && isChameleon && inProgress;
 
   const handleCellClick = (word) => async () => {
     if (!canClickCells) {

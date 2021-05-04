@@ -115,11 +115,11 @@
   }
 
   td.glowing-cells {
-    animation: pulsate 4s ease-in-out infinite;
+    animation: pulsate 3s ease-in-out infinite;
     cursor: pointer;
 
     &:hover {
-      animation: pulsate 4s ease-in-out infinite;
+      animation: pulsate 3s ease-in-out infinite;
       opacity: 0.8;
     }
     &:active {
@@ -159,7 +159,7 @@
     box-shadow: 0 0 1px purple;
   }
   50% {
-    box-shadow: 0 0 7px purple;
+    box-shadow: 0 0 5px purple;
   }
   100% {
     box-shadow: 0 0 1px purple;
