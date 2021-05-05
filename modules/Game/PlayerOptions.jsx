@@ -51,7 +51,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
 
   return (
     <div className={styles['player-options']}>
-      <Form>
+      <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Row>
           <Form.Group as={Col} md="4" controlId="clue">
             <Form.Label>Word Clue</Form.Label>

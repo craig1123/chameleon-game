@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
@@ -29,7 +30,7 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
     router.push(`/room/${roomId}`);
   });
 
-  useSocket(socket, 'roomFull', (moreRooms) => {
+  useSocket(socket, 'moreRooms', (moreRooms) => {
     setRooms(moreRooms);
   });
 
@@ -46,7 +47,9 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
       <Header />
       <Toasts socket={socket} callback={setRooms} />
       <Container className={styles['lobby-wrapper']}>
-        <h3 className="h1">{playerName}</h3>
+        <h3 className="h1">
+          {playerName} <Link href="/">&#9998;</Link>
+        </h3>
         <div className={styles['host-game']}>
           <Button onClick={hostGame}>Host Game</Button>
           <HostGame show={showHostModal} onHide={() => setShowHostModal(false)} socket={socket} />

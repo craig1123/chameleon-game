@@ -39,12 +39,12 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
   return (
     <section className={styles['host-options']}>
       <h4 className="marker">Host Options</h4>
-      <Button onClick={startGame} disabled={inProgress || players.length < 3}>
+      <Button type="button" onClick={startGame} disabled={inProgress || players.length < 3}>
         Start Game
       </Button>
       <br />
       <br />
-      <Form>
+      <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Row>
           <Form.Group as={Col} controlId="gridBoard">
             <Form.Control as="select" value={gridTitle} onChange={changeGrid} name="gameTitle" disabled={inProgress}>

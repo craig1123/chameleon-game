@@ -35,7 +35,7 @@ export const getServerSideProps = async (ctx) => {
     console.log(error);
   }
 
-  const player = room?.players?.[playerName] ?? 0;
+  const player = room?.players?.[playerName] ?? -1;
   const playerExists = player > -1;
 
   if (!activeGame || !room || !playerExists) {

@@ -71,7 +71,7 @@ const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
                     <td
                       onClick={handleCellClick(word)}
                       key={word}
-                      className={`${keyWord === word && !isChameleon ? styles['key-word'] : ''} ${
+                      className={`${keyWord === word && (!isChameleon || !inProgress) ? styles['key-word'] : ''} ${
                         canClickCells ? styles['glowing-cells'] : ''
                       }`}
                     >

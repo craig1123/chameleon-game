@@ -205,7 +205,7 @@ io.on('connection', function (socket) {
 
   socket.on('requestRoom', function (preferences) {
     const { requestedRoom } = preferences;
-
+    // host new room
     if (rooms[requestedRoom] === undefined) {
       console.log(username + ' is requesting a new room: ' + requestedRoom);
       const { gameTitle, privateRoom, chameleonSeeClues, pointsForGuessing } = preferences;
@@ -239,10 +239,13 @@ io.on('connection', function (socket) {
       socket.join(roomId);
       io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
       socket.emit('acceptJoinGame', requestedRoom);
+      io.emit('moreRooms', rooms);
     } else if (rooms[requestedRoom] && Object.keys(rooms[requestedRoom].players).length >= MAX_PLAYERS) {
+      // rooms are full
       socket.emit('toaster', { title: 'Error', message: 'The room you requested is full' }, rooms);
       return;
     } else if (rooms[requestedRoom] && active_grids[requestedRoom]) {
+      // join a rom
       roomId = requestedRoom;
       rooms[roomId].players[username] = 0;
       active_grids[roomId].players[username] = {
@@ -397,6 +400,7 @@ io.on('connection', function (socket) {
       });
     }
 
+    active_grids[roomId].boardIsClickable = false;
     rooms[roomId].inProgress = false;
     io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });

@@ -95,11 +95,9 @@ const Game = ({ socket, activeGame, room }) => {
     <>
       <Header showConnection={false}>
         <GameId roomId={roomState.id} />
-        {!roomState.inProgress && (
-          <button type="button" onClick={leaveRoom} className={styles['leave-room']}>
-            &#8592; Leave Room
-          </button>
-        )}
+        <button type="button" onClick={leaveRoom} className={styles['leave-room']}>
+          &#8592; Leave Room
+        </button>
       </Header>
       <Toasts socket={socket} callback={handleToasts} />
       <div className={styles.relative}>
