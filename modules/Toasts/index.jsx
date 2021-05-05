@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import Toast from 'react-bootstrap/Toast';
 import useSocket from '../../hooks/useSocket';
 
+const types = {
+  info: 'rgb(50, 115, 153)',
+  moreInfo: '#17181a',
+  success: 'rgb(126, 185, 120)',
+  error: '#e36c6e',
+};
+
 const Toasts = ({ socket, callback }) => {
   const [toasts, setToasts] = useState([]);
 
@@ -26,11 +33,20 @@ const Toasts = ({ socket, callback }) => {
           autohide
           animation
           key={i}
-          delay={10000}
+          delay={8000}
           show={showToast}
           onClose={() => setToasts((prev) => prev.filter((_, j) => i !== j))}
         >
           <Toast.Header>
+            <span
+              style={{
+                height: '20px',
+                width: '20px',
+                borderRadius: '5px',
+                marginRight: '5px',
+                background: types[toast.type] || types.moreInfo,
+              }}
+            />
             <strong className="mr-auto">{toast.title}</strong>
           </Toast.Header>
           <Toast.Body>{toast.message}</Toast.Body>

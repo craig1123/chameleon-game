@@ -3,7 +3,7 @@ const fakeRooms = {
     id: 'fakeRoom1',
     host: 'craig',
     players: {
-      poop: 0,
+      poop: 1,
       stinky: 0,
       silly: 0,
       wormy: 0,

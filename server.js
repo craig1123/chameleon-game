@@ -242,7 +242,7 @@ io.on('connection', function (socket) {
       io.emit('moreRooms', rooms);
     } else if (rooms[requestedRoom] && Object.keys(rooms[requestedRoom].players).length >= MAX_PLAYERS) {
       // rooms are full
-      socket.emit('toaster', { title: 'Error', message: 'The room you requested is full' }, rooms);
+      socket.emit('toaster', { title: 'Error', message: 'The room you requested is full', type: 'error' }, rooms);
       return;
     } else if (rooms[requestedRoom] && active_grids[requestedRoom]) {
       // join a rom
@@ -326,8 +326,9 @@ io.on('connection', function (socket) {
       io.in(roomId).emit(
         'toaster',
         {
-          title: 'Congrats!',
+          title: 'Found!',
           message: `The chameleon was found! ${currentGrid.chameleon} now gets a chance to pick the correct clue.`,
+          type: 'success',
         },
         { key: 'chameleonFound' }
       );
@@ -357,8 +358,9 @@ io.on('connection', function (socket) {
     io.in(roomId).emit(
       'toaster',
       {
-        title: 'Oh no!',
+        title: 'Escaped',
         message: `The chameleon has escaped! Congrats to ${currentGrid.chameleon} and better luck next time for everyone else.`,
+        type: 'info',
       },
       { key: 'chameleonEscaped' }
     );
@@ -376,8 +378,9 @@ io.on('connection', function (socket) {
       io.in(roomId).emit(
         'toaster',
         {
-          title: 'Nice!',
-          message: `The chameleon guessed the correct word. Congrats to ${chameleon} and better luck next time for everyone else.`,
+          title: 'Correct',
+          message: `The chameleon guessed the CORRECT word. Congrats to ${chameleon} and better luck next time for everyone else.`,
+          type: 'success',
         },
         { key: 'correctWord' }
       );
@@ -387,7 +390,8 @@ io.on('connection', function (socket) {
         'toaster',
         {
           title: 'Wrong',
-          message: `The chameleon guessed the wrong word. +1 for everyone else. Host ${currentRoom.host} needs to press "Start Game" to keep playing`,
+          message: `The chameleon guessed the WRONG word. ${chameleon} guessed ${word}. +1 for everyone else.`,
+          type: 'error',
         },
         { key: 'wrongWord' }
       );
@@ -412,7 +416,7 @@ io.on('connection', function (socket) {
     }
     io.in(roomId).emit(
       'toaster',
-      { title: 'Kicked Player', message: `Player ${playerName} was kicked from the room` },
+      { title: 'Kicked Player', message: `Player ${playerName} was kicked from the room`, type: 'moreInfo' },
       { key: 'kickPlayer', playerName }
     );
   });
@@ -435,6 +439,25 @@ io.on('connection', function (socket) {
     }
     rooms[roomId][name] = value;
     io.in(roomId).emit('updateRoom', { roomState: rooms[roomId] });
+  });
+
+  socket.on('resetScores', function () {
+    const currentGrid = active_grids[roomId];
+    const currentRoom = rooms[roomId];
+    if (!currentRoom || !currentGrid) {
+      return;
+    }
+    const players = Object.keys(currentRoom.players);
+    active_grids[roomId].boardIsClickable = false;
+    active_grids[roomId].inProgress = false;
+    rooms[roomId].players = players.reduce(
+      (prev, cur) => ({
+        ...prev,
+        [cur]: 0,
+      }),
+      {}
+    );
+    io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });
 });
 

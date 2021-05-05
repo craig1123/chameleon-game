@@ -19,9 +19,15 @@ const differentClueBoards = Object.keys(wordSheet);
 const HostOptions = ({ socket, roomState, gameState, players }) => {
   const { gridTitle } = gameState;
   const { inProgress, pointsForGuessing, chameleonSeeClues, privateRoom } = roomState;
+  const totalScore = players.reduce((prev, cur) => prev + roomState.players[cur], 0);
+  const playedMoreThanOneRound = totalScore > 0;
 
   const startGame = () => {
     socket.emit('startGame');
+  };
+
+  const resetScores = () => {
+    socket.emit('resetScores');
   };
 
   const kickPlayer = (playerName) => () => {
@@ -39,9 +45,18 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
   return (
     <section className={styles['host-options']}>
       <h4 className="marker">Host Options</h4>
-      <Button type="button" onClick={startGame} disabled={inProgress || players.length < 3}>
-        Start Game
-      </Button>
+      <Row>
+        <Col>
+          <Button type="button" onClick={startGame} disabled={inProgress || players.length < 3}>
+            {playedMoreThanOneRound ? 'Next Round' : 'Start Game'}
+          </Button>
+        </Col>
+        <Col>
+          <Button type="button" onClick={resetScores} disabled={inProgress}>
+            Reset Scores
+          </Button>
+        </Col>
+      </Row>
       <br />
       <br />
       <Form onSubmit={(e) => e.preventDefault()}>
