@@ -25,10 +25,9 @@ const HostGame = ({ onHide, show, socket }) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const gameTitle = formData.get('gameTitle');
     const preferences = {
       requestedRoom: makeRoomId(),
-      gameTitle: gameTitle === 'random' ? null : gameTitle,
+      gridSelect: formData.get('gridSelect'),
       privateRoom: formData.get('privateRoom') === 'on',
       chameleonSeeClues: formData.get('chameleonSeeClues') === 'on',
       pointsForGuessing: formData.get('pointsForGuessing') === 'on',
@@ -52,7 +51,7 @@ const HostGame = ({ onHide, show, socket }) => {
           <Form.Row>
             <Form.Group as={Col} controlId="gridBoard">
               <Form.Label>Clue Boards</Form.Label>
-              <Form.Control as="select" defaultValue="Random Board" name="gameTitle">
+              <Form.Control as="select" defaultValue="Random Board" name="gridSelect">
                 <option value="random">Random Board</option>
                 {differentClueBoards.map((gridTitle) => (
                   <option key={gridTitle} value={gridTitle}>

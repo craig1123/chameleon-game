@@ -46,6 +46,7 @@ const active_grids = dev ? fakeActiveGrids : {};
 //   gridTitle: string,
 //   keyWord: string,
 //   chameleon: username,
+//   gridSelect: string | 'random'
 //   boardIsClickable: boolean
 //   playerShowsClue: username
 //   players: {
@@ -60,93 +61,6 @@ const active_grids = dev ? fakeActiveGrids : {};
 // array of grid titles
 const gridTitles = Object.keys(wordSheet) || [];
 const gridTitlesLength = gridTitles.length;
-// =========
-// functions
-// =========
-
-// random integer choice from 0:N-1
-function getRandomChoice(N) {
-  return Math.floor(Math.random() * N);
-}
-function getRandomValue(arr) {
-  return arr[getRandomChoice(arr.length)];
-}
-
-// remove a user from an array
-function removeUserFromArr(username, array) {
-  const index = array.indexOf(username);
-  // if we found a use remove them
-  if (index > -1) {
-    array.splice(index, 1);
-  }
-}
-
-// removes users from objects
-function removeUserFromRoom(username, roomId) {
-  if (rooms[roomId]) {
-    delete rooms[roomId].players[username];
-    const players = Object.keys(rooms[roomId].players);
-    if (rooms[roomId].host === username && players.length > 0) {
-      // assign new host
-      rooms[roomId].host = getRandomValue(players);
-    }
-  }
-  if (active_grids[roomId]) {
-    delete active_grids[roomId].players[username];
-  }
-}
-
-// is a username available?
-function userNameExists(username) {
-  return users.indexOf(username) > -1;
-}
-
-// get a random grid
-function randomGrid() {
-  const gridTitle = gridTitles[getRandomChoice(gridTitlesLength)];
-  return {
-    gridTitle: gridTitle,
-    grid: wordSheet[gridTitle],
-  };
-}
-
-// did the chameleon escape
-function didChameleonEscape(currentGrid) {
-  // if all votes are cast count up the points
-  let chameleonEscapes = false;
-  // count up votes
-  const votes = {};
-  const players = Object.keys(currentGrid.players);
-  players.forEach((player) => {
-    const vote = currentGrid.players[player].vote;
-    if (votes[vote]) {
-      votes[vote]++;
-    } else {
-      votes[vote] = 1;
-    }
-  });
-  // find the highest vote
-  let highestNum = 0;
-  const highestVote = Object.keys(votes).reduce((prev, cur) => {
-    if (votes[prev] === votes[cur]) {
-      highestNum = 'tie';
-      return prev;
-    }
-    if (votes[prev] > votes[cur]) {
-      highestNum = votes[prev];
-      return prev;
-    }
-
-    highestNum = votes[cur];
-    return cur;
-  }, highestNum);
-
-  if (highestVote !== currentGrid.chameleon || highestNum === 'tie') {
-    chameleonEscapes = true;
-  }
-
-  return chameleonEscapes;
-}
 
 // ======================
 // socket.io
@@ -161,7 +75,6 @@ io.on('connection', function (socket) {
     users.push(username);
   }
 
-  // TODO: send all players
   socket.emit('connected', { playersOnline: users.length, connected: true, username });
 
   // exit room
@@ -219,8 +132,8 @@ io.on('connection', function (socket) {
     // host new room
     if (rooms[requestedRoom] === undefined) {
       console.log(username + ' is requesting a new room: ' + requestedRoom);
-      const { gameTitle, privateRoom, chameleonSeeClues, pointsForGuessing, anonymousVoting } = preferences;
-      const newGrid = gameTitle ? { gridTitle: gameTitle, grid: wordSheet[gameTitle] } : randomGrid();
+      const { gridSelect, privateRoom, chameleonSeeClues, pointsForGuessing, anonymousVoting } = preferences;
+      const newGrid = gridSelect === 'random' ? randomGrid() : { gridTitle: gridSelect, grid: wordSheet[gridSelect] };
       rooms[requestedRoom] = {
         id: requestedRoom,
         host: username,
@@ -233,6 +146,7 @@ io.on('connection', function (socket) {
         anonymousVoting,
       };
       active_grids[requestedRoom] = {
+        gridSelect,
         grid: newGrid.grid,
         gridTitle: newGrid.gridTitle,
         keyWord: '',
@@ -281,10 +195,14 @@ io.on('connection', function (socket) {
     if (!currentRoom || !currentGrid) {
       return;
     }
+    const newGrid =
+      currentGrid.gridSelect === 'random' ? randomGrid() : { gridTitle: currentGrid.gridTitle, grid: currentGrid.grid };
     const players = Object.keys(currentGrid.players);
     const chameleon = getRandomValue(players);
     const restOfPlayers = players.filter((player) => player !== chameleon);
     rooms[roomId].inProgress = true;
+    active_grids[roomId].grid = newGrid.grid;
+    active_grids[roomId].gridTitle = newGrid.gridTitle;
     active_grids[roomId].boardIsClickable = false;
     active_grids[roomId].playerShowsClue = currentRoom.chameleonSeeClues ? getRandomValue(restOfPlayers) : '';
     active_grids[roomId].keyWord = getRandomValue(currentGrid.grid);
@@ -433,13 +351,15 @@ io.on('connection', function (socket) {
     );
   });
 
-  socket.on('changeGrid', function (gameTitle) {
+  socket.on('changeGrid', function (gridSelect) {
     if (!active_grids[roomId]) {
       return;
     }
-    const newGrid = gameTitle === 'random' ? randomGrid() : { gridTitle: gameTitle, grid: wordSheet[gameTitle] };
-    active_grids[roomId].grid = newGrid.grid;
-    active_grids[roomId].gridTitle = newGrid.gridTitle;
+    if (gridSelect !== 'random') {
+      active_grids[roomId].grid = wordSheet[gridSelect];
+      active_grids[roomId].gridTitle = gridSelect;
+    }
+    active_grids[roomId].gridSelect = gridSelect;
     active_grids[roomId].keyWord = '';
     active_grids[roomId].chameleon = '';
     io.in(roomId).emit('updateRoom', { gameState: active_grids[roomId] });
@@ -516,3 +436,91 @@ nextApp.prepare().then(() => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 });
+
+// =========
+// functions
+// =========
+
+// random integer choice from 0:N-1
+function getRandomChoice(N) {
+  return Math.floor(Math.random() * N);
+}
+function getRandomValue(arr) {
+  return arr[getRandomChoice(arr.length)];
+}
+
+// remove a user from an array
+function removeUserFromArr(username, array) {
+  const index = array.indexOf(username);
+  // if we found a use remove them
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+}
+
+// removes users from objects
+function removeUserFromRoom(username, roomId) {
+  if (rooms[roomId]) {
+    delete rooms[roomId].players[username];
+    const players = Object.keys(rooms[roomId].players);
+    if (rooms[roomId].host === username && players.length > 0) {
+      // assign new host
+      rooms[roomId].host = getRandomValue(players);
+    }
+  }
+  if (active_grids[roomId]) {
+    delete active_grids[roomId].players[username];
+  }
+}
+
+// is a username available?
+function userNameExists(username) {
+  return users.indexOf(username) > -1;
+}
+
+// get a random grid
+function randomGrid() {
+  const gridTitle = gridTitles[getRandomChoice(gridTitlesLength)];
+  return {
+    gridTitle: gridTitle,
+    grid: wordSheet[gridTitle],
+  };
+}
+
+// did the chameleon escape
+function didChameleonEscape(currentGrid) {
+  // if all votes are cast count up the points
+  let chameleonEscapes = false;
+  // count up votes
+  const votes = {};
+  const players = Object.keys(currentGrid.players);
+  players.forEach((player) => {
+    const vote = currentGrid.players[player].vote;
+    if (votes[vote]) {
+      votes[vote]++;
+    } else {
+      votes[vote] = 1;
+    }
+  });
+  // find the highest vote
+  let highestNum = 0;
+  const highestVote = Object.keys(votes).reduce((prev, cur) => {
+    if (votes[prev] === votes[cur]) {
+      highestNum = 'tie';
+      return prev;
+    }
+    if (votes[prev] > votes[cur]) {
+      highestNum = votes[prev];
+      return prev;
+    }
+
+    highestNum = votes[cur];
+    return cur;
+  }, highestNum);
+
+  if (highestVote !== currentGrid.chameleon || highestNum === 'tie') {
+    chameleonEscapes = true;
+  }
+
+  return chameleonEscapes;
+}

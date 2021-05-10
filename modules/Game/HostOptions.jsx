@@ -17,7 +17,7 @@ const differentClueBoards = Object.keys(wordSheet);
  * In Progress goes to false everytime the round is over
  */
 const HostOptions = ({ socket, roomState, gameState, players }) => {
-  const { gridTitle } = gameState;
+  const { gridSelect } = gameState;
   const { inProgress, pointsForGuessing, chameleonSeeClues, privateRoom, anonymousVoting } = roomState;
   const totalScore = players.reduce((prev, cur) => prev + roomState.players[cur], 0);
   const playedMoreThanOneRound = totalScore > 0;
@@ -62,7 +62,7 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
       <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Row>
           <Form.Group as={Col} controlId="gridBoard">
-            <Form.Control as="select" value={gridTitle} onChange={changeGrid} name="gameTitle" disabled={inProgress}>
+            <Form.Control as="select" value={gridSelect} onChange={changeGrid} name="gridSelect" disabled={inProgress}>
               <option value="random">Random Board</option>
               {differentClueBoards.map((title) => (
                 <option key={title} value={title}>
