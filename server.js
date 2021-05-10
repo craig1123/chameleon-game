@@ -127,16 +127,18 @@ function didChameleonEscape(currentGrid) {
   });
   // find the highest vote
   let highestNum = 0;
-  const highestVote = Object.keys(votes).reduce((a, b) => {
-    if (votes[a] === votes[b]) {
+  const highestVote = Object.keys(votes).reduce((prev, cur) => {
+    if (votes[prev] === votes[cur]) {
       highestNum = 'tie';
-      return a;
+      return prev;
     }
-    if (votes[a] > votes[b]) {
-      highestNum = votes[a];
-      return a;
+    if (votes[prev] > votes[cur]) {
+      highestNum = votes[prev];
+      return prev;
     }
-    return b;
+
+    highestNum = votes[cur];
+    return cur;
   }, highestNum);
 
   if (highestVote !== currentGrid.chameleon || highestNum === 'tie') {
@@ -459,7 +461,7 @@ io.on('connection', function (socket) {
     }
     const players = Object.keys(currentRoom.players);
     active_grids[roomId].boardIsClickable = false;
-    active_grids[roomId].inProgress = false;
+    rooms[roomId].inProgress = false;
     rooms[roomId].players = players.reduce(
       (prev, cur) => ({
         ...prev,

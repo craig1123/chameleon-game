@@ -52,7 +52,7 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
           </Button>
         </Col>
         <Col>
-          <Button type="button" onClick={resetScores} disabled={inProgress}>
+          <Button type="button" onClick={resetScores}>
             Reset Scores
           </Button>
         </Col>
