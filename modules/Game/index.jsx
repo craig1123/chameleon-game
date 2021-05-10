@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Cookies from 'js-cookie';
 import useSocket from '../../hooks/useSocket';
 import { usePlayer } from '../../context/player';
 import Header from '../Header';
@@ -26,14 +27,18 @@ const Game = ({ socket, activeGame, room }) => {
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    // if user doesn't exist in game, add them on mount
+    const playerName = Cookies.get('playerName') || '';
+    if (socket && playerName && !room[playerName]) {
+      socket.emit('requestRoom', { requestedRoom: room.id });
+    }
+    return () => {
       if (socket) {
         socket.emit('leaveRoom');
       }
-    },
-    []
-  );
+    };
+  }, []);
 
   useSocket(socket, 'updateRoom', (state) => {
     setState((prev) => ({
@@ -67,7 +72,7 @@ const Game = ({ socket, activeGame, room }) => {
   };
 
   const handleToasts = (args) => {
-    switch (args) {
+    switch (args.key) {
       case 'wrongWord': {
         if (username !== gameState.chameleon) {
           throwConfetti();

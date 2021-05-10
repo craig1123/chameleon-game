@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Alert from 'react-bootstrap/Alert';
@@ -11,20 +11,11 @@ import HostGame from './HostGame';
 import Room from './Room';
 
 import styles from './lobby.module.scss';
-import { usePlayer } from '../../context/player';
 
 const Lobby = ({ socket, roomsObj, playerName }) => {
   const router = useRouter();
   const [rooms, setRooms] = useState(roomsObj);
   const [showHostModal, setShowHostModal] = useState(false);
-  const { playerState } = usePlayer();
-  const { playersOnline } = playerState;
-
-  useEffect(() => {
-    if (socket && playersOnline === 0) {
-      socket.emit('requestuser', playerName);
-    }
-  }, [socket, playerName, playersOnline]);
 
   useSocket(socket, 'acceptJoinGame', (roomId) => {
     router.push(`/room/${roomId}`);
@@ -38,9 +29,9 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
     setShowHostModal(true);
   };
 
-  const roomsArray = roomsObj ? Object.keys(roomsObj) : [];
-  const joinAGameArray = roomsArray.filter((roomId) => !roomsObj[roomId]?.inProgress && !roomsObj[roomId]?.full);
-  const inProgressGames = roomsArray.filter((roomId) => roomsObj[roomId]?.inProgress);
+  const roomsArray = rooms ? Object.keys(rooms) : [];
+  const joinAGameArray = roomsArray.filter((roomId) => !rooms[roomId]?.inProgress && !rooms[roomId]?.full);
+  const inProgressGames = roomsArray.filter((roomId) => rooms[roomId]?.inProgress);
 
   return (
     <>

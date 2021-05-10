@@ -2,6 +2,7 @@ const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const next = require('next');
+const cookie = require('cookie');
 const wordSheet = require('./consts/wordSheet.js');
 const fakeRooms = require('./consts/fakeRooms.js');
 const fakeActiveGrids = require('./consts/fakeActiveGrids');
@@ -149,33 +150,40 @@ function didChameleonEscape(currentGrid) {
 // ======================
 
 io.on('connection', function (socket) {
-  // TODO: send all players
-  socket.emit('connected', { playersOnline: users.length, connected: true });
-
+  const cookies = cookie.parse(socket.handshake.headers.cookie);
   // locals
-  let username;
-  let roomId;
+  let username = cookies.playerName || undefined;
+  let roomId = undefined;
+  if (username) {
+    users.push(username);
+  }
+
+  // TODO: send all players
+  socket.emit('connected', { playersOnline: users.length, connected: true, username });
 
   // exit room
   function exitRoom() {
     socket.to(roomId).emit('updateRoom', { roomState: rooms[roomId] });
     socket.leave(roomId);
 
-    if (rooms[roomId] && Object.keys(rooms[roomId].players).length === 0) {
+    if (rooms[roomId] && Object.keys(rooms[roomId].players).length < 1) {
       delete rooms[roomId];
       delete active_grids[roomId];
+      io.emit('moreRooms', rooms);
     }
 
     roomId = undefined;
   }
 
   function removePlayer() {
+    if (roomId !== undefined) {
+      removeUserFromRoom(username, roomId);
+    }
     if (username !== undefined) {
       removeUserFromArr(username, users);
       username = undefined;
     }
-    if (username !== undefined && roomId !== undefined) {
-      removeUserFromRoom(username, roomId);
+    if (roomId !== undefined) {
       exitRoom();
     }
   }
