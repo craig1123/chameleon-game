@@ -32,6 +32,7 @@ const HostGame = ({ onHide, show, socket }) => {
       privateRoom: formData.get('privateRoom') === 'on',
       chameleonSeeClues: formData.get('chameleonSeeClues') === 'on',
       pointsForGuessing: formData.get('pointsForGuessing') === 'on',
+      anonymousVoting: formData.get('anonymousVoting') === 'on',
     };
     socket.emit('requestRoom', preferences);
   };
@@ -79,6 +80,11 @@ const HostGame = ({ onHide, show, socket }) => {
                 defaultChecked
                 label="Player gets 1 point for guessing chameleon when not in majority"
               />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="anonymousVoting">
+            <Col>
+              <Form.Check name="anonymousVoting" label="Anonymous Voting" />
             </Col>
           </Form.Group>
         </Modal.Body>

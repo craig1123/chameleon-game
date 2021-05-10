@@ -2,9 +2,22 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import styles from './game.module.scss';
 
+function getVote({ allCluesReady, playerObj, anonymousVoting, inProgress }) {
+  if (anonymousVoting && allCluesReady && inProgress) {
+    return !!playerObj.vote ? '\u2714' : '';
+  }
+
+  if (allCluesReady) {
+    return playerObj.vote;
+  }
+
+  return null;
+}
+
 const Players = ({ roomState, gameState, players, allCluesReady, isChameleon }) => {
-  const { inProgress, chameleonSeeClues } = roomState;
+  const { inProgress, chameleonSeeClues, anonymousVoting } = roomState;
   const { playerShowsClue } = gameState;
+
   return (
     <section className={styles.players}>
       <Table responsive size="sm" borderless>
@@ -18,22 +31,25 @@ const Players = ({ roomState, gameState, players, allCluesReady, isChameleon }) 
           </tr>
         </thead>
         <tbody>
-          {players.map((player) => (
-            <tr
-              key={player}
-              className={gameState.chameleon === player && !inProgress ? styles['player-chameleon'] : null}
-            >
-              <td>{player}</td>
-              <td>{roomState.players[player]}</td>
-              <td>
-                {allCluesReady || (isChameleon && chameleonSeeClues && playerShowsClue === player)
-                  ? gameState.players[player].clue
-                  : null}
-              </td>
-              <td>{gameState.players[player]?.clueReady && <span>&#10004;</span>}</td>
-              <td>{allCluesReady ? gameState.players[player].vote : null}</td>
-            </tr>
-          ))}
+          {players.map((player) => {
+            const playerObj = gameState.players[player];
+            return (
+              <tr
+                key={player}
+                className={gameState.chameleon === player && !inProgress ? styles['player-chameleon'] : null}
+              >
+                <td>{player}</td>
+                <td>{roomState.players[player]}</td>
+                <td>
+                  {allCluesReady || (isChameleon && chameleonSeeClues && playerShowsClue === player)
+                    ? playerObj.clue
+                    : null}
+                </td>
+                <td>{playerObj?.clueReady && <span>&#10004;</span>}</td>
+                <td>{getVote({ allCluesReady, playerObj, anonymousVoting, inProgress })}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </section>
