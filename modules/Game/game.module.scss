@@ -7,6 +7,7 @@
 .leave-room {
   background: none;
   border: none;
+  font-weight: bold;
   margin: 0;
   padding: 0;
 }
@@ -89,6 +90,14 @@
   &.upsideDown {
     transform: rotate(180deg);
   }
+}
+
+.countdown {
+  color: $red;
+  font-size: 40px;
+  position: absolute;
+  left: 10px;
+  top: 0px;
 }
 
 .grid-table {
@@ -184,9 +193,9 @@
   border-radius: 5px;
   padding: 15px;
   margin-bottom: 1rem;
-  text-align: center;
 
-  h4 {
+  h4,
+  h5 {
     color: $blue;
     text-align: center;
   }

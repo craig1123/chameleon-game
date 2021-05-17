@@ -13,8 +13,25 @@ import HostOptions from './HostOptions';
 import GameId from './GameId';
 import PlayersGrid from './PlayersGrid';
 import PlayerOptions from './PlayerOptions';
+import GameRules from './GameRules';
 
 import styles from './game.module.scss';
+
+const leaveMessage = 'The game is in progress. Are you sure you want to leave?';
+
+const throwConfetti = async () => {
+  const party = await import('party-js');
+  let times = 0;
+  const interval = setInterval(() => {
+    party.confetti(document.body, {
+      count: 100,
+    });
+    times++;
+    if (times === 2) {
+      clearInterval(interval);
+    }
+  }, 2000);
+};
 
 const Game = ({ socket, activeGame, room }) => {
   const router = useRouter();
@@ -26,6 +43,7 @@ const Game = ({ socket, activeGame, room }) => {
   const allCluesReady = Object.keys(gameState.players).every((player) => gameState.players[player]?.clueReady);
   const isChameleon = username === gameState.chameleon;
   const isHost = username === roomState.host;
+  const { inProgress } = roomState;
 
   useEffect(() => {
     // if user doesn't exist in game, add them on mount
@@ -40,6 +58,23 @@ const Game = ({ socket, activeGame, room }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const onUnload = (e) => {
+      e.preventDefault();
+
+      (e || window.event).returnValue = leaveMessage; // Gecko + IE
+      return leaveMessage;
+    };
+    if (inProgress) {
+      addEventListener('beforeunload', onUnload, { capture: true });
+    } else {
+      removeEventListener('beforeunload', onUnload, { capture: true });
+    }
+    return () => {
+      removeEventListener('beforeunload', onUnload, { capture: true });
+    };
+  }, [inProgress]);
+
   useSocket(socket, 'updateRoom', (state) => {
     setState((prev) => ({
       roomState: state.roomState || prev.roomState,
@@ -51,24 +86,18 @@ const Game = ({ socket, activeGame, room }) => {
     router.push('/lobby');
   };
 
-  const kickPlayer = (playerName) => {
-    if (username === playerName) {
+  const promptLeave = () => {
+    if (!inProgress) {
+      leaveRoom();
+    } else if (window.confirm(leaveMessage)) {
       leaveRoom();
     }
   };
 
-  const throwConfetti = async () => {
-    const party = await import('party-js');
-    let times = 0;
-    const interval = setInterval(() => {
-      party.confetti(document.body, {
-        count: 100,
-      });
-      times++;
-      if (times === 2) {
-        clearInterval(interval);
-      }
-    }, 2000);
+  const kickPlayer = (playerName) => {
+    if (username === playerName) {
+      leaveRoom();
+    }
   };
 
   const handleToasts = (args) => {
@@ -98,11 +127,11 @@ const Game = ({ socket, activeGame, room }) => {
 
   return (
     <>
-      <Header showConnection={false}>
-        <GameId roomId={roomState.id} />
-        <button type="button" onClick={leaveRoom} className={styles['leave-room']}>
+      <Header showConnection>
+        <button type="button" onClick={promptLeave} className={styles['leave-room']}>
           &#8592; Leave Room
         </button>
+        <GameId roomId={roomState.id} />
       </Header>
       <Toasts socket={socket} callback={handleToasts} />
       <div className={styles.relative}>
@@ -117,12 +146,7 @@ const Game = ({ socket, activeGame, room }) => {
                 isChameleon={isChameleon}
               />
             </Col>
-            <GridOfWords
-              socket={socket}
-              gameState={gameState}
-              inProgress={roomState.inProgress}
-              isChameleon={isChameleon}
-            />
+            <GridOfWords socket={socket} gameState={gameState} inProgress={inProgress} isChameleon={isChameleon} />
           </Row>
           <Row>
             <Col>
@@ -138,6 +162,7 @@ const Game = ({ socket, activeGame, room }) => {
           <Row>
             <Col>
               {isHost && <HostOptions socket={socket} roomState={roomState} gameState={gameState} players={players} />}
+              {!isHost && <GameRules roomState={roomState} />}
             </Col>
           </Row>
         </Container>

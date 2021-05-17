@@ -3,7 +3,7 @@ import { usePlayer } from '../../context/player';
 
 import styles from './header.module.scss';
 
-const Header = ({ children, showConnection = true }) => {
+const Header = ({ children, showPlayersOnline = false, showConnection = false }) => {
   const { playerState } = usePlayer();
   const { playersOnline, connected } = playerState;
 
@@ -12,21 +12,25 @@ const Header = ({ children, showConnection = true }) => {
       <header className={styles.header}>
         <div className={styles['header-col']}>
           <div className={styles['header-connection']}>
-            <span className={styles['connection-label']}>Connection: </span>
-            <span className={styles.circle} style={{ background: connected ? '#67c23a' : '#f56c6c' }}></span>
+            {children &&
+              Children.map(children, (child, i) => (
+                <Fragment key={i}>
+                  {child}
+                  <span className={styles['header-separator']}></span>
+                </Fragment>
+              ))}
             {showConnection && (
+              <>
+                <span className={styles['connection-label']}>Connection: </span>
+                <span className={styles.circle} style={{ background: connected ? '#67c23a' : '#f56c6c' }} />
+              </>
+            )}
+            {showPlayersOnline && (
               <>
                 <span className={styles['header-separator']}></span>
                 <span className={styles['connection-label']}>Players online: {playersOnline}</span>
               </>
             )}
-            {children &&
-              Children.map(children, (child, i) => (
-                <Fragment key={i}>
-                  <span className={styles['header-separator']}></span>
-                  {child}
-                </Fragment>
-              ))}
           </div>
         </div>
       </header>

@@ -67,7 +67,7 @@ const gridTitlesLength = gridTitles.length;
 // ======================
 
 io.on('connection', function (socket) {
-  const cookies = cookie.parse(socket.handshake.headers.cookie);
+  const cookies = socket.handshake.headers.cookie ? cookie.parse(socket.handshake.headers.cookie) : {};
   // locals
   let username = cookies.playerName || undefined;
   let roomId = undefined;

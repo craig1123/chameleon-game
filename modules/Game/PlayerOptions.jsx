@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import { usePlayer } from '../../context/player';
+import Ellipsis from '../Ellipsis';
 
 import styles from './game.module.scss';
 
@@ -42,8 +43,24 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
   if (!inProgress) {
     return (
       <div className={styles['player-options']}>
-        <Alert style={{ color: 'rgb(50, 115, 153)', textDecoration: 'underline' }}>
-          <h2>Waiting for host to start game...</h2>
+        <Alert style={{ color: 'rgb(50, 115, 153)' }}>
+          <h2>
+            Waiting for host to start game
+            <Ellipsis />
+          </h2>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (gameState.boardIsClickable) {
+    return (
+      <div className={styles['player-options']}>
+        <Alert style={{ color: 'rgb(50, 115, 153)' }}>
+          <h2>
+            Chameleon is guessing a word
+            <Ellipsis />
+          </h2>
         </Alert>
       </div>
     );

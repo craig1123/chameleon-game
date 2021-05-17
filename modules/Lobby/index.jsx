@@ -35,7 +35,7 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
 
   return (
     <>
-      <Header />
+      <Header showConnection showPlayersOnline />
       <Toasts socket={socket} callback={setRooms} />
       <Container className={styles['lobby-wrapper']}>
         <h3 className="h1">

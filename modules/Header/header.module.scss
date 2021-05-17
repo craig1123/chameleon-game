@@ -22,12 +22,16 @@ $header-height: 45px;
   border-bottom-right-radius: 20px;
   color: #000;
   user-select: none;
-  padding: 12px 16px 16px;
+  padding: 12px;
   font-size: 14px;
 
   * {
     display: inline-block;
     vertical-align: middle;
+  }
+
+  @media (min-width: $tablet) {
+    padding: 12px 16px 16px;
   }
 }
 

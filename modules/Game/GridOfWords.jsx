@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import Collapse from 'react-bootstrap/Collapse';
 import useIsMobile from '../../hooks/useIsMobile';
+import CountdownGrid from './CountdownGrid';
+
 import styles from './game.module.scss';
 
 const toMatrix = (arr, width) =>
@@ -40,6 +42,7 @@ const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
   return (
     <section className={styles['grid-of-words']}>
       <div className={styles['table-title']}>
+        {canClickCells && <CountdownGrid gameState={gameState} socket={socket} />}
         <button
           onClick={() => setShowTable(!showTable)}
           aria-controls="clue-table"

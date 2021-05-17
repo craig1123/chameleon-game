@@ -71,12 +71,13 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
               ))}
             </Form.Control>
           </Form.Group>
-          <Form.Group as={Col} controlId="chameleonSeeClues">
+          <Form.Group as={Col} controlId="privateRoom">
             <Form.Check
-              checked={chameleonSeeClues}
+              label="Private Game"
+              name="privateRoom"
               onChange={changeHostOption}
-              name="chameleonSeeClues"
-              label="Chameleon can see one random player's clue"
+              disabled={inProgress}
+              checked={privateRoom}
             />
           </Form.Group>
         </Form.Row>
@@ -90,15 +91,18 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
               label="1 point for guessing chameleon"
             />
           </Form.Group>
-          <Form.Group as={Col} controlId="privateRoom">
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} controlId="chameleonSeeClues">
             <Form.Check
-              label="Private Game"
-              name="privateRoom"
+              checked={chameleonSeeClues}
               onChange={changeHostOption}
-              disabled={inProgress}
-              checked={privateRoom}
+              name="chameleonSeeClues"
+              label="Chameleon can see one random player's clue"
             />
           </Form.Group>
+        </Form.Row>
+        <Form.Row>
           <Form.Group as={Col} controlId="anonymousVoting">
             <Form.Check
               label="Anonymous Voting"
@@ -109,7 +113,7 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
           </Form.Group>
         </Form.Row>
       </Form>
-      <h5>Click on player to kick:</h5>
+      <h5 className="marker">Click on player to kick:</h5>
       <div className={styles['kick-players']}>
         {players.map((player) => (
           <div onClick={kickPlayer(player)} key={player} className={styles['player-to-kick']}>
