@@ -71,6 +71,9 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
               ))}
             </Form.Control>
           </Form.Group>
+          <Col />
+        </Form.Row>
+        <Form.Row>
           <Form.Group as={Col} controlId="privateRoom">
             <Form.Check
               label="Private Game"

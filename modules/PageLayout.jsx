@@ -1,11 +1,12 @@
 import React from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import config from '../consts/config';
 import useIsMobile from '../hooks/useIsMobile';
 
 const defaultTitle = 'Play Chameleon Online!';
 const defaultDescription = `This is a completely free online version of the popular board game - "The Chameleon". The platform offers a seamless playing experience on desktop as well as on mobile devices and is perfect for both eye-to-eye and over-the-internet game sessions.`;
-const baseUrl = 'https://the-chameleon.herokuapp.com/';
+const baseUrl = config.url;
 
 // interface Props {
 //   description?: string;

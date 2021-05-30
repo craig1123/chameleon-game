@@ -43,18 +43,20 @@ const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
     <section className={styles['grid-of-words']}>
       <div className={styles['table-title']}>
         {canClickCells && <CountdownGrid gameState={gameState} socket={socket} />}
-        <button
-          onClick={() => setShowTable(!showTable)}
-          aria-controls="clue-table"
-          aria-expanded={showTable}
-          type="button"
-          title={showTable ? 'Collapse table' : 'Show table'}
-          className={`${styles['arrow-collapse']} ${showTable ? styles['upsideDown'] : ''}`}
-        >
-          &#x25BC;
-        </button>
+        {isMobile && (
+          <button
+            onClick={() => setShowTable(!showTable)}
+            aria-controls="clue-table"
+            aria-expanded={showTable}
+            type="button"
+            title={showTable ? 'Collapse table' : 'Show table'}
+            className={`${styles['arrow-collapse']} ${showTable ? styles['upsideDown'] : ''}`}
+          >
+            &#x25BC;
+          </button>
+        )}
         <h2>{gridTitle}</h2>
-        <h5>{isChameleon ? 'You are the Chameleon!' : `Keyword: ${keyWord}`}</h5>
+        <h5>{isChameleon ? 'You are the CHAMELEON! Blend in.' : `Keyword: ${keyWord}`}</h5>
       </div>
       <Collapse in={showTable}>
         <div>

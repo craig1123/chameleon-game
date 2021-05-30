@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import wordSheet from '../../consts/wordSheet';
+import * as ga from '../../utils/ga';
 
 const differentClueBoards = Object.keys(wordSheet);
 
@@ -33,6 +34,10 @@ const HostGame = ({ onHide, show, socket }) => {
       pointsForGuessing: formData.get('pointsForGuessing') === 'on',
       anonymousVoting: formData.get('anonymousVoting') === 'on',
     };
+    ga.event({
+      action: 'host',
+      params: preferences,
+    });
     socket.emit('requestRoom', preferences);
   };
 

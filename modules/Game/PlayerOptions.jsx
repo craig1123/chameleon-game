@@ -82,6 +82,8 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
               checked={clueReady}
               label="Clue Ready?"
               name="clueReady"
+              style={{ fontSize: 20 }}
+              className={styles.clueReady}
               disabled={allCluesReady}
             />
           </Form.Group>
@@ -96,7 +98,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
               name="vote"
             >
               <option value="" disabled>
-                {allCluesReady ? 'Please select a player' : 'Waiting for all clues'}
+                {allCluesReady ? 'Select the chameleon' : 'Waiting for all clues'}
               </option>
               {playerOptions.map((player) => (
                 <option value={player} key={player}>

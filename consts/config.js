@@ -1,6 +1,9 @@
+const prod = process.env.NODE_ENV === 'production';
+
 const config = {
-  development: process.env.NODE_ENV !== 'production',
-  url: process.env.NODE_ENV === 'production' ? 'https://the-chameleon.herokuapp.com' : 'http://localhost:3000',
+  development: !prod,
+  ga: prod ? 'G-PKG6DHM8QM' : '',
+  url: prod ? 'https://the-chameleon.herokuapp.com' : 'http://localhost:3000',
 };
 
 export default config;
