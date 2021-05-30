@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
@@ -7,17 +8,23 @@ import Ellipsis from '../Ellipsis';
 
 import styles from './game.module.scss';
 
+const getClue = (gameState) => {
+  const firstUsername = Cookies.get('playerName') || '';
+  console.log(gameState.players?.[firstUsername]?.clue);
+  return gameState.players?.[firstUsername]?.clue || '';
+};
+
 const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady }) => {
   const { playerState } = usePlayer();
   const { username } = playerState;
   const { inProgress, chameleonSeeClues } = roomState;
-  const [clue, setClue] = useState(() => gameState.players?.[username]?.clue || '');
+  const [clue, setClue] = useState(() => getClue(gameState));
   const playerOptions = players.filter((player) => player !== username);
   const clueReady = gameState.players?.[username]?.clueReady || false;
 
   useEffect(() => {
     if (inProgress) {
-      setClue('');
+      setClue(gameState.players?.[username]?.clue || '');
     }
   }, [inProgress]);
 

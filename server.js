@@ -1,6 +1,8 @@
 const app = require('express')();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  transports: ['websocket'],
+});
 const next = require('next');
 const cookie = require('cookie');
 const wordSheet = require('./consts/wordSheet.js');
@@ -20,8 +22,10 @@ const nextHandler = nextApp.getRequestHandler();
 // globals
 // ======
 const MAX_PLAYERS = 10;
+const RECONNECTION_TIME = dev ? 5000 : 60000; // in ms
 // an array of all users
 const users = [];
+const usersConnected = [];
 // active rooms
 const rooms = dev ? fakeRooms : {};
 // roomId: {
@@ -65,14 +69,19 @@ const gridTitlesLength = gridTitles.length;
 // ======================
 // socket.io
 // ======================
-
 io.on('connection', function (socket) {
   const cookies = socket.handshake.headers.cookie ? cookie.parse(socket.handshake.headers.cookie) : {};
   // locals
   let username = cookies.playerName || undefined;
-  let roomId = undefined;
-  if (username) {
+  let roomId = cookies.roomId || undefined;
+  if (username && !userNameExists(username)) {
     users.push(username);
+  }
+  if (username && usersConnected.indexOf(username) === -1) {
+    usersConnected.push(username);
+  }
+  if (roomId && active_grids[roomId]) {
+    socket.join(roomId);
   }
 
   socket.emit('connected', { playersOnline: users, connected: true, username });
@@ -106,7 +115,17 @@ io.on('connection', function (socket) {
 
   // disconnect
   socket.on('removePlayer', removePlayer);
-  socket.on('disconnect', removePlayer);
+  socket.on('disconnect', function () {
+    // remove from usersConnected array immediately
+    removeUserFromArr(username, usersConnected);
+    // give a timeout
+    setTimeout(() => {
+      // if they didn't reconnect in that time... axe 'em
+      if (usersConnected.indexOf(username) < 0) {
+        removePlayer();
+      }
+    }, RECONNECTION_TIME);
+  });
 
   // leaveroom event
   socket.on('leaveRoom', function () {

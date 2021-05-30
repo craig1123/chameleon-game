@@ -12,7 +12,7 @@ const MyApp = ({ pageProps, Component }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const newSocket = io();
+    const newSocket = io({ transports: ['websocket'], upgrade: false });
     setSocket(newSocket);
 
     return () => {

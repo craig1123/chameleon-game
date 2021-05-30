@@ -19,6 +19,7 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
   const [showHostModal, setShowHostModal] = useState(false);
 
   useSocket(socket, 'acceptJoinGame', (roomId) => {
+    Cookies.set('roomId', roomId, { expires: 1 });
     router.push(`/room/${roomId}`);
   });
 

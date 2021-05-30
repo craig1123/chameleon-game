@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,10 +13,11 @@ import GridOfWords from './GridOfWords';
 import HostOptions from './HostOptions';
 import GameId from './GameId';
 import PlayersGrid from './PlayersGrid';
-import PlayerOptions from './PlayerOptions';
 import GameRules from './GameRules';
 
 import styles from './game.module.scss';
+
+const PlayerOptions = dynamic(() => import('./PlayerOptions'), { ssr: false });
 
 const leaveMessage = 'The game is in progress. Are you sure you want to leave?';
 
@@ -54,6 +56,7 @@ const Game = ({ socket, activeGame, room }) => {
     return () => {
       if (socket) {
         socket.emit('leaveRoom');
+        Cookies.remove('roomId');
       }
     };
   }, []);
@@ -83,6 +86,7 @@ const Game = ({ socket, activeGame, room }) => {
   });
 
   const leaveRoom = () => {
+    Cookies.remove('roomId');
     router.push('/lobby');
   };
 
