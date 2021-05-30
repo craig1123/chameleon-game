@@ -6,7 +6,7 @@ import config from '../consts/config';
 
 const LobbyPage = (props) => {
   return (
-    <PageLayout>
+    <PageLayout showChamelon>
       <Lobby {...props} />
     </PageLayout>
   );

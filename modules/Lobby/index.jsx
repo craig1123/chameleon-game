@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -39,7 +40,10 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
       <Toasts socket={socket} callback={setRooms} />
       <Container className={styles['lobby-wrapper']}>
         <h3 className="h1">
-          {playerName} <Link href="/">&#9998;</Link>
+          {playerName}{' '}
+          <Link href="/">
+            <a onClick={() => Cookies.remove('playerName')}>&#9998;</a>
+          </Link>
         </h3>
         <div className={styles['host-game']}>
           <Button onClick={hostGame}>Host Game</Button>

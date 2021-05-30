@@ -3,13 +3,13 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import useSocket from '../hooks/useSocket';
 
-const PlayerContext = React.createContext({ connected: false, playersOnline: 0, username: '' });
+const PlayerContext = React.createContext({ connected: false, playersOnline: [], username: '' });
 
 export const PlayerProvider = ({ children, socket }) => {
   const router = useRouter();
   const [playerState, setPlayerState] = useState(() => ({
     connected: false,
-    playersOnline: 0,
+    playersOnline: [],
     username: Cookies.get('playerName') || '',
   }));
 

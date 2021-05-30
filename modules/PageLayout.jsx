@@ -5,7 +5,7 @@ import useIsMobile from '../hooks/useIsMobile';
 
 const defaultTitle = 'Play Chameleon Online!';
 const defaultDescription = `This is a completely free online version of the popular board game - "The Chameleon". The platform offers a seamless playing experience on desktop as well as on mobile devices and is perfect for both eye-to-eye and over-the-internet game sessions.`;
-const baseUrl = 'https://chameleon.vercel.com';
+const baseUrl = 'https://the-chameleon.herokuapp.com/';
 
 // interface Props {
 //   description?: string;
@@ -23,6 +23,7 @@ const Layout = ({
   ogImage = '',
   googleSiteVerification = '',
   url = '',
+  showChamelon = false,
 }) => {
   const isMobile = useIsMobile();
   const finalTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
@@ -54,20 +55,22 @@ const Layout = ({
       </Head>
       <main>{children}</main>
       <div className="footer-height" />
-      <footer className="footer">
-        <div className="inner-footer">
-          <Image
-            height={isMobile ? '100px' : '128px'}
-            width={isMobile ? '100px' : '128px'}
-            src="/chameleon_blue.png"
-            quality="100"
-          />
-          <div className="footer-words">
-            <h1>Chameleon</h1>
-            <h2>Blend In</h2>
+      {showChamelon && (
+        <footer className="footer">
+          <div className="inner-footer">
+            <Image
+              height={isMobile ? '100px' : '128px'}
+              width={isMobile ? '100px' : '128px'}
+              src="/chameleon_blue.png"
+              quality="100"
+            />
+            <div className="footer-words">
+              <h1>Chameleon</h1>
+              <h2>Keep Hidden</h2>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </>
   );
 };

@@ -75,7 +75,7 @@ io.on('connection', function (socket) {
     users.push(username);
   }
 
-  socket.emit('connected', { playersOnline: users.length, connected: true, username });
+  socket.emit('connected', { playersOnline: users, connected: true, username });
 
   // exit room
   function exitRoom() {
@@ -124,7 +124,7 @@ io.on('connection', function (socket) {
 
     username = requestedUsername;
     users.push(username);
-    socket.emit('acceptuser', { username, playersOnline: users.length, rooms });
+    socket.emit('acceptuser', { username, playersOnline: users, rooms });
   });
 
   socket.on('requestRoom', function (preferences) {
