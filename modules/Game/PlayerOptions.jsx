@@ -21,7 +21,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
   const [clue, setClue] = useState(() => getClue(gameState));
   const playerOptions = players.filter((player) => player !== username);
   const clueReady = gameState.players?.[username]?.clueReady || false;
-  const showCountDown = clueTimer && !allCluesReady && inProgress;
+  const showCountDown = clueTimer && !clueReady && !allCluesReady && inProgress;
 
   useEffect(() => {
     if (inProgress) {
@@ -49,11 +49,12 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
   };
 
   const timeUp = () => {
-    const value = 'Time ran out on me.';
-    socket.emit('updatePlayerOption', [
-      { optionName: 'clueReady', value: true },
-      { optionName: 'clue', value: value },
-    ]);
+    if (!clueReady) {
+      socket.emit('updatePlayerOption', [
+        { optionName: 'clueReady', value: true },
+        { optionName: 'clue', value: clue || 'Time ran out on me.' },
+      ]);
+    }
   };
 
   if (!inProgress) {
