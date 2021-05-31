@@ -448,7 +448,7 @@ io.on('connection', function (socket) {
       chat_rooms[headerName].shift();
     }
     const chatRoomLength = chat_rooms[headerName].length;
-    const recentChat = chat_rooms[headerName][chatRoomLength - 1];
+    const recentChat = chat_rooms[headerName][chatRoomLength - 1] || {};
     const same = recentChat.username === username || recentChat.prevUser === username;
     const chatMessage = {
       message,
