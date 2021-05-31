@@ -39,10 +39,14 @@ const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
     socket.emit('chameleonGuesses', word);
   };
 
+  const timeUp = () => {
+    socket.emit('chameleonGuesses', 'RAN OUT OF TIME!');
+  };
+
   return (
     <section className={styles['grid-of-words']}>
       <div className={styles['table-title']}>
-        {canClickCells && <CountdownGrid gameState={gameState} socket={socket} />}
+        {canClickCells && <CountdownGrid timeUp={timeUp} />}
         {isMobile && (
           <button
             onClick={() => setShowTable(!showTable)}

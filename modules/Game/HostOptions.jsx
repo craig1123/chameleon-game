@@ -18,7 +18,7 @@ const differentClueBoards = Object.keys(wordSheet);
  */
 const HostOptions = ({ socket, roomState, gameState, players }) => {
   const { gridSelect } = gameState;
-  const { inProgress, pointsForGuessing, chameleonSeeClues, privateRoom, anonymousVoting } = roomState;
+  const { inProgress, pointsForGuessing, chameleonSeeClues, privateRoom, anonymousVoting, clueTimer } = roomState;
   const totalScore = players.reduce((prev, cur) => prev + roomState.players[cur], 0);
   const playedMoreThanOneRound = totalScore > 0;
 
@@ -112,6 +112,16 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
               name="anonymousVoting"
               onChange={changeHostOption}
               checked={anonymousVoting}
+            />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} controlId="clueTimer">
+            <Form.Check
+              label="1 min timer when thinking of clues"
+              name="clueTimer"
+              onChange={changeHostOption}
+              checked={clueTimer}
             />
           </Form.Group>
         </Form.Row>

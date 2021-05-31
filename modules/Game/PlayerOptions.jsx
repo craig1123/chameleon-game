@@ -5,22 +5,23 @@ import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import { usePlayer } from '../../context/player';
 import Ellipsis from '../Ellipsis';
+import CountdownGrid from './CountdownGrid';
 
 import styles from './game.module.scss';
 
 const getClue = (gameState) => {
   const firstUsername = Cookies.get('playerName') || '';
-  console.log(gameState.players?.[firstUsername]?.clue);
   return gameState.players?.[firstUsername]?.clue || '';
 };
 
 const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady }) => {
   const { playerState } = usePlayer();
   const { username } = playerState;
-  const { inProgress, chameleonSeeClues } = roomState;
+  const { inProgress, chameleonSeeClues, clueTimer } = roomState;
   const [clue, setClue] = useState(() => getClue(gameState));
   const playerOptions = players.filter((player) => player !== username);
   const clueReady = gameState.players?.[username]?.clueReady || false;
+  const showCountDown = clueTimer && !allCluesReady && inProgress;
 
   useEffect(() => {
     if (inProgress) {
@@ -45,6 +46,14 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
 
   const selectVote = (e) => {
     socket.emit('updateVote', e.target.value);
+  };
+
+  const timeUp = () => {
+    const value = 'Time ran out on me.';
+    socket.emit('updatePlayerOption', [
+      { optionName: 'clueReady', value: true },
+      { optionName: 'clue', value: value },
+    ]);
   };
 
   if (!inProgress) {
@@ -75,6 +84,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
 
   return (
     <div className={styles['player-options']}>
+      {showCountDown && <CountdownGrid timeUp={timeUp} timer={60} />}
       <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Row>
           <Form.Group as={Col} md="4" controlId="clue">

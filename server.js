@@ -40,6 +40,7 @@ const rooms = dev ? fakeRooms : {};
 //   chameleonSeeClues?: boolean
 //   pointsForGuessing?: boolean
 //   anonymousVoting: boolean
+//   clueTimer: boolean
 //   chat: [] // TODO in the future, maybe put in it's own object like active_grids
 // }
 
@@ -151,7 +152,7 @@ io.on('connection', function (socket) {
     // host new room
     if (rooms[requestedRoom] === undefined) {
       console.log(username + ' is requesting a new room: ' + requestedRoom);
-      const { gridSelect, privateRoom, chameleonSeeClues, pointsForGuessing, anonymousVoting } = preferences;
+      const { gridSelect, privateRoom, chameleonSeeClues, pointsForGuessing, anonymousVoting, clueTimer } = preferences;
       const newGrid = gridSelect === 'random' ? randomGrid() : { gridTitle: gridSelect, grid: wordSheet[gridSelect] };
       rooms[requestedRoom] = {
         id: requestedRoom,
@@ -163,6 +164,7 @@ io.on('connection', function (socket) {
         chameleonSeeClues,
         pointsForGuessing,
         anonymousVoting,
+        clueTimer,
       };
       active_grids[requestedRoom] = {
         gridSelect,

@@ -33,6 +33,7 @@ const HostGame = ({ onHide, show, socket }) => {
       chameleonSeeClues: formData.get('chameleonSeeClues') === 'on',
       pointsForGuessing: formData.get('pointsForGuessing') === 'on',
       anonymousVoting: formData.get('anonymousVoting') === 'on',
+      clueTimer: formData.get('clueTimer') === 'on',
     };
     ga.event({
       action: 'host',
@@ -89,6 +90,11 @@ const HostGame = ({ onHide, show, socket }) => {
           <Form.Group as={Row} controlId="anonymousVoting">
             <Col>
               <Form.Check name="anonymousVoting" label="Anonymous Voting" />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="clueTimer">
+            <Col>
+              <Form.Check name="clueTimer" label="Add a 1 min timer when adding a clue" />
             </Col>
           </Form.Group>
         </Modal.Body>

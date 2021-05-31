@@ -93,7 +93,7 @@
 }
 
 .countdown {
-  color: $red;
+  color: $black;
   font-size: 40px;
   position: absolute;
   left: 10px;
@@ -178,13 +178,18 @@
 .player-options {
   background: $yellow;
   border-radius: 5px;
-  padding: 5px;
+  padding: 25px 5px 0px;
   margin-bottom: 1rem;
+  position: relative;
   text-align: center;
 
   h4 {
     color: $blue;
     text-align: center;
+  }
+
+  @media (min-width: $tablet) {
+    padding: 25px 15px 0px;
   }
 }
 
