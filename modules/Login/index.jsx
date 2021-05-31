@@ -43,6 +43,7 @@ const Login = ({ socket }) => {
             size="lg"
             required
             placeholder="Please provide a name"
+            maxLength="20"
           />
           {errorName && <Form.Text>{errorName}</Form.Text>}
         </Form.Group>

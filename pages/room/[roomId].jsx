@@ -2,12 +2,15 @@ import React from 'react';
 import fetch from 'isomorphic-unfetch';
 import PageLayout from '../../modules/PageLayout';
 import Game from '../../modules/Game';
+import Chat from '../../modules/Chat';
 import config from '../../consts/config';
+const { url } = config;
 
-const RoomId = (props) => {
+const RoomId = ({ socket, chatRoom, playerName, room, activeGame, roomId }) => {
   return (
     <PageLayout>
-      <Game {...props} />
+      <Game socket={socket} room={room} activeGame={activeGame} />
+      <Chat headerName={roomId} socket={socket} playerName={playerName} chatRoom={chatRoom} />
     </PageLayout>
   );
 };
@@ -24,13 +27,16 @@ export const getServerSideProps = async (ctx) => {
     };
   }
 
-  const urls = [`${config.url}/getRoom/${ctx.query.roomId}`, `${config.url}/getActiveGrid/${ctx.query.roomId}`];
+  const { roomId } = query;
+  const urls = [`${url}/getRoom/${roomId}`, `${url}/getActiveGrid/${roomId}`, `${url}/getChatRoom/${roomId}`];
   let room = null;
   let activeGame = null;
+  let chatRoom = [];
   try {
     const results = await Promise.all(urls.map((url) => fetch(url).then((resp) => resp.json())));
     room = results[0];
     activeGame = results[1];
+    chatRoom = results[2];
   } catch (error) {
     console.log(error);
   }
@@ -51,6 +57,9 @@ export const getServerSideProps = async (ctx) => {
     props: {
       room,
       activeGame,
+      chatRoom,
+      playerName,
+      roomId,
     },
   };
 };

@@ -8,6 +8,7 @@ const cookie = require('cookie');
 const wordSheet = require('./consts/wordSheet.js');
 const fakeRooms = require('./consts/fakeRooms.js');
 const fakeActiveGrids = require('./consts/fakeActiveGrids');
+const fakeChatRooms = require('./consts/fakeChatRooms');
 // const cluster = require('cluster');
 // const numCPUs = require('os').cpus().length;
 // for scaling if we need more CPU cores https://github.com/mars/heroku-nextjs-custom-server-express/blob/master/server.js
@@ -23,6 +24,7 @@ const nextHandler = nextApp.getRequestHandler();
 // ======
 const MAX_PLAYERS = 10;
 const RECONNECTION_TIME = dev ? 5000 : 60000; // in ms
+const CHAT_LENGTH = 200;
 // an array of all users
 const users = [];
 const usersConnected = [];
@@ -63,6 +65,15 @@ const active_grids = dev ? fakeActiveGrids : {};
 //   },
 // };
 
+const chat_rooms = dev ? fakeChatRooms : { Lobby: [] };
+// roomId: [
+//   {
+//     username: string,
+//     message: string,
+//     timestamp: timestamp,
+//   },
+// ];
+
 // array of grid titles
 const gridTitles = Object.keys(wordSheet) || [];
 const gridTitlesLength = gridTitles.length;
@@ -95,6 +106,9 @@ io.on('connection', function (socket) {
     if (rooms[roomId] && Object.keys(rooms[roomId].players).length < 1) {
       delete rooms[roomId];
       delete active_grids[roomId];
+      if (chat_rooms[roomId]) {
+        delete chat_rooms[roomId];
+      }
       io.emit('moreRooms', rooms);
     }
 
@@ -182,6 +196,7 @@ io.on('connection', function (socket) {
           },
         },
       };
+      chat_rooms[requestedRoom] = [];
       roomId = requestedRoom;
       socket.join(roomId);
       io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
@@ -423,6 +438,37 @@ io.on('connection', function (socket) {
     );
     io.in(roomId).emit('updateRoom', { roomState: rooms[roomId], gameState: active_grids[roomId] });
   });
+
+  socket.on('chatMessage', function ({ message, type, headerName }) {
+    const chatRoom = chat_rooms[headerName];
+    if (!chatRoom) {
+      chat_rooms[headerName] = [];
+    }
+    if (chat_rooms[headerName].length >= CHAT_LENGTH) {
+      chat_rooms[headerName].shift();
+    }
+    const chatRoomLength = chat_rooms[headerName].length;
+    const recentChat = chat_rooms[headerName][chatRoomLength - 1];
+    const same = recentChat.username === username || recentChat.prevUser === username;
+    const chatMessage = {
+      message,
+      timestamp: Date.now(),
+    };
+    if (same) {
+      chatMessage.prevUser = username;
+    } else {
+      chatMessage.username = username;
+    }
+    if (type) {
+      chatMessage.type = type;
+    }
+    chat_rooms[headerName].push(chatMessage);
+    if (roomId === headerName) {
+      io.in(headerName).emit('updateChat', chat_rooms[headerName]);
+    } else {
+      io.emit('updateLobbyChat', chat_rooms[headerName]);
+    }
+  });
 });
 
 nextApp.prepare().then(() => {
@@ -443,6 +489,15 @@ nextApp.prepare().then(() => {
     const grid = active_grids[req.params.roomId];
     if (grid) {
       res.json(grid);
+    } else {
+      res.json(null);
+    }
+  });
+
+  app.get('/getChatRoom/:roomId', (req, res) => {
+    const chatRoom = chat_rooms[req.params.roomId];
+    if (chatRoom) {
+      res.json(chatRoom);
     } else {
       res.json(null);
     }

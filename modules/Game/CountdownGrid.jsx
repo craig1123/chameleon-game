@@ -25,7 +25,6 @@ const CountdownGrid = ({ timeUp, timer = 30 }) => {
   }, [count]);
 
   useEffect(() => {
-    console.log('hi');
     clearInterval(intervalRef.current);
     setCount(timer);
     intervalRef.current = setInterval(decreaseNum, 1000);
