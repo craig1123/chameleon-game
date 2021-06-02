@@ -546,6 +546,12 @@ function removeUserFromRoom(username, roomId) {
   }
   if (active_grids[roomId]) {
     delete active_grids[roomId].players[username];
+    const players = Object.keys(active_grids[roomId].players);
+
+    if (active_grids[roomId].chameleon === username && players.length > 0) {
+      // restart game if chameleon leaves
+      rooms[roomId].inProgress = false;
+    }
   }
 }
 
