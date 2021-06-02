@@ -53,11 +53,26 @@ const Game = ({ socket, activeGame, room }) => {
     if (socket && playerName && !room[playerName]) {
       socket.emit('requestRoom', { requestedRoom: room.id });
     }
+
+    const onVisibilitychange = () => {
+      if (!document.hidden) {
+        // check if user still exists in game
+        const player = room?.players?.[playerName] ?? -1;
+        const playerExists = player > -1;
+
+        if (!playerExists) {
+          router.push('/lobby');
+        }
+      }
+    };
+
+    window.addEventListener('visibilitychange', onVisibilitychange);
     return () => {
       if (socket) {
         socket.emit('leaveRoom');
         Cookies.remove('roomId');
       }
+      window.removeEventListener('visibilitychange', onVisibilitychange);
     };
   }, []);
 

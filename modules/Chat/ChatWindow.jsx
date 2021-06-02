@@ -2,13 +2,16 @@ import React, { useEffect } from 'react';
 import MessageList from './MessageList';
 import UserInput from './UserInput';
 import Header from './Header';
+import useIsMobile from '../../hooks/useIsMobile';
 
 const ChatWindow = ({ messageList, onMessageWasSent, headerName, isOpen, onClose, showEmoji, username }) => {
+  const isMobile = useIsMobile();
   const onSubmit = (message) => {
     onMessageWasSent(message);
   };
 
   useEffect(() => {
+    if (!isMobile) return;
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     function resetBody() {
@@ -32,7 +35,7 @@ const ChatWindow = ({ messageList, onMessageWasSent, headerName, isOpen, onClose
     } else {
       resetBody();
     }
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   const classList = ['sc-chat-window', isOpen ? 'opened' : 'closed'];
   return (
