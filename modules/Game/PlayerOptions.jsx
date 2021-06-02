@@ -21,7 +21,7 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
   const [clue, setClue] = useState(() => getClue(gameState));
   const playerOptions = players.filter((player) => player !== username);
   const clueReady = gameState.players?.[username]?.clueReady || false;
-  const showCountDown = clueTimer && !clueReady && !allCluesReady && inProgress;
+  const showCountDown = clueTimer && !allCluesReady && inProgress;
 
   useEffect(() => {
     if (inProgress) {

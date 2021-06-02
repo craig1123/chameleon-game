@@ -25,11 +25,10 @@
 }
 
 .sc-message-list {
-  height: 80%;
   overflow-y: auto;
   background-color: white;
   background-size: 100%;
-  padding: 40px 0px;
+  padding: 20px 0px;
 }
 
 @media (max-width: 480px) {
@@ -38,10 +37,8 @@
     height: 100%;
     max-height: 100%;
     right: 0px;
-    bottom: 0px;
+    top: 0px;
     border-radius: 0px;
-  }
-  .sc-chat-window {
     transition: 0.1s ease-in-out;
   }
   .sc-chat-window.closed {
@@ -142,6 +139,7 @@
 @media (max-width: 480px) {
   .sc-header {
     border-radius: 0px;
+    min-height: 60px;
   }
 }
 
@@ -289,28 +287,6 @@
   font-size: 40px;
 }
 
-.sc-message--file {
-  background: white;
-  border: solid 1px #cccdd1;
-  padding: 15px 20px;
-  border-radius: 5px;
-  display: flex;
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 1.4;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.sc-message--file p {
-  margin: 0px 0px 0px 10px;
-  color: rgba(86, 88, 103, 0.6);
-}
-
-.sc-message--file .sc-user-input--file-icon:hover path {
-  fill: rgba(86, 88, 103, 0.3);
-}
-
 @media (max-width: 480px) {
   .sc-message {
     width: 80%;
@@ -402,8 +378,6 @@
   border-bottom-left-radius: 10px;
   box-sizing: border-box;
   padding: 18px;
-  font-size: 15px;
-  font-weight: 400;
   line-height: 1.33;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -447,10 +421,6 @@
 
 .sc-user-input--button button {
   cursor: pointer;
-}
-
-.sc-user-input--buttons input[type='file'] {
-  display: none;
 }
 
 .sc-user-input--picker-wrapper {

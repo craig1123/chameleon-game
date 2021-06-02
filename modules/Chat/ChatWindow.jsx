@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MessageList from './MessageList';
 import UserInput from './UserInput';
 import Header from './Header';
@@ -7,6 +7,32 @@ const ChatWindow = ({ messageList, onMessageWasSent, headerName, isOpen, onClose
   const onSubmit = (message) => {
     onMessageWasSent(message);
   };
+
+  useEffect(() => {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    function resetBody() {
+      if (document.body) {
+        document.body.style.overflow = '';
+        if (isSafari) {
+          const offsetY = Math.abs(parseInt(document.body.style.top || '0', 10));
+          document.body.style.position = '';
+          document.body.style.top = '';
+          window.scrollTo(0, offsetY || 0);
+        }
+      }
+    }
+    if (isOpen) {
+      const scroll = window.scrollY;
+      document.body.style.overflow = 'hidden';
+      if (isSafari) {
+        document.body.style.position = 'fixed';
+        document.body.style.top = `${scroll}px`;
+      }
+    } else {
+      resetBody();
+    }
+  }, [isOpen]);
 
   const classList = ['sc-chat-window', isOpen ? 'opened' : 'closed'];
   return (
