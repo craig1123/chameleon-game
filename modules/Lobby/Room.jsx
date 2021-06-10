@@ -27,7 +27,7 @@ const Room = ({ room, roomId, socket }) => {
     <Card bg="primary" style={cardStyles} className="mb-2">
       <Card.Header>Host: {host}</Card.Header>
       <Card.Body>
-        <Card.Text>Players: {Object.keys(players).join(', ')}</Card.Text>
+        <Card.Text>Players: {players && Object.keys(players).join(', ')}</Card.Text>
         <Card.Text>Status: {getStatus(room)}</Card.Text>
         {privateRoom && <PrivateSignup roomId={roomId} socket={socket} />}
         {full || inProgress || privateRoom ? null : (

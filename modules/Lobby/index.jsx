@@ -31,6 +31,18 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
     setShowHostModal(true);
   };
 
+  const handleToasts = (args) => {
+    switch (args.key) {
+      case 'moreRooms': {
+        setRooms(args.rooms);
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
+
   const roomsArray = rooms ? Object.keys(rooms) : [];
   const joinAGameArray = roomsArray.filter((roomId) => !rooms[roomId]?.inProgress && !rooms[roomId]?.full);
   const inProgressGames = roomsArray.filter((roomId) => rooms[roomId]?.inProgress);
@@ -38,7 +50,7 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
   return (
     <>
       <Header showConnection showPlayersOnline />
-      <Toasts socket={socket} callback={setRooms} />
+      <Toasts socket={socket} callback={handleToasts} />
       <Container className={styles['lobby-wrapper']}>
         <h3 className="h1">
           {playerName}{' '}

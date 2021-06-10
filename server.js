@@ -116,7 +116,7 @@ io.on('connection', function (socket) {
 
   function removePlayer() {
     if (roomId !== undefined) {
-      removeUserFromRoom(username, roomId);
+      removeUserFromRoom(username, roomId, socket);
     }
     if (username !== undefined) {
       removeUserFromArr(username, users);
@@ -143,7 +143,7 @@ io.on('connection', function (socket) {
 
   // leaveroom event
   socket.on('leaveRoom', function () {
-    removeUserFromRoom(username, roomId);
+    removeUserFromRoom(username, roomId, socket);
     exitRoom();
   });
 
@@ -203,7 +203,11 @@ io.on('connection', function (socket) {
       io.emit('moreRooms', rooms);
     } else if (rooms[requestedRoom] && Object.keys(rooms[requestedRoom].players).length >= MAX_PLAYERS) {
       // rooms are full
-      socket.emit('toaster', { title: 'Error', message: 'The room you requested is full', type: 'error' }, rooms);
+      socket.emit(
+        'toaster',
+        { title: 'Error', message: 'The room you requested is full', type: 'error' },
+        { key: 'moreRooms', rooms }
+      );
       return;
     } else if (rooms[requestedRoom] && active_grids[requestedRoom]) {
       // join a rom
@@ -542,13 +546,23 @@ function removeUserFromArr(username, array) {
 }
 
 // removes users from objects
-function removeUserFromRoom(username, roomId) {
+function removeUserFromRoom(username, roomId, socket) {
   if (rooms[roomId]) {
     delete rooms[roomId].players[username];
     const players = Object.keys(rooms[roomId].players);
     if (rooms[roomId].host === username && players.length > 0) {
       // assign new host
-      rooms[roomId].host = getRandomValue(players);
+      const newHost = getRandomValue(players);
+      rooms[roomId].host = newHost;
+      io.in(roomId).emit(
+        'toaster',
+        {
+          title: 'Host Left',
+          message: `A new host has been assigned: ${newHost}`,
+          type: 'moreInfo',
+        },
+        { key: 'hostLeft' }
+      );
     }
   }
   if (active_grids[roomId]) {
@@ -558,6 +572,15 @@ function removeUserFromRoom(username, roomId) {
     if (active_grids[roomId].chameleon === username && players.length > 0) {
       // restart game if chameleon leaves
       rooms[roomId].inProgress = false;
+      io.in(roomId).emit(
+        'toaster',
+        {
+          title: 'Chameleon Left',
+          message: 'Host needs to start a new game to get a new chameleon.',
+          type: 'moreInfo',
+        },
+        { key: 'chameleonLeft' }
+      );
     }
   }
 }
