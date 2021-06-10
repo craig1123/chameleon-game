@@ -22,9 +22,9 @@ const nextHandler = nextApp.getRequestHandler();
 // ======
 // globals
 // ======
-const MAX_PLAYERS = 10;
-const RECONNECTION_TIME = dev ? 5000 : 60000; // in ms
-const CHAT_LENGTH = 200;
+const MAX_PLAYERS = 12;
+const RECONNECTION_TIME = dev ? 5000 : 300000; // in ms
+const CHAT_LENGTH = 150;
 // an array of all users
 const users = [];
 const usersConnected = [];
@@ -43,7 +43,6 @@ const rooms = dev ? fakeRooms : {};
 //   pointsForGuessing?: boolean
 //   anonymousVoting: boolean
 //   clueTimer: boolean
-//   chat: [] // TODO in the future, maybe put in it's own object like active_grids
 // }
 
 // grid by room
@@ -229,6 +228,7 @@ io.on('connection', function (socket) {
     const currentGrid = active_grids[roomId];
     const currentRoom = rooms[roomId];
     if (!currentRoom || !currentGrid) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     const newGrid =
@@ -261,6 +261,7 @@ io.on('connection', function (socket) {
   // PLAYER OPTIONS
   socket.on('updatePlayerOption', function (options) {
     if (!active_grids[roomId] || !username) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     options.forEach(({ optionName, value }) => {
@@ -272,6 +273,7 @@ io.on('connection', function (socket) {
   socket.on('updateVote', function (playerVote) {
     const currentGrid = active_grids[roomId];
     if (!currentGrid || !username) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     active_grids[roomId].players[username].vote = playerVote;
@@ -336,6 +338,7 @@ io.on('connection', function (socket) {
     const currentGrid = active_grids[roomId];
     const currentRoom = rooms[roomId];
     if (!currentGrid || !username) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     const { chameleon } = currentGrid;
@@ -378,6 +381,7 @@ io.on('connection', function (socket) {
   // HOST OPTIONS
   socket.on('kickPlayer', function (playerName) {
     if (!rooms[roomId]) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     io.in(roomId).emit(
@@ -389,6 +393,7 @@ io.on('connection', function (socket) {
 
   socket.on('changeGrid', function (gridSelect) {
     if (!active_grids[roomId]) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     if (gridSelect !== 'random') {
@@ -403,6 +408,7 @@ io.on('connection', function (socket) {
 
   socket.on('changeRoomOptions', function ({ name, value }) {
     if (!rooms[roomId]) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     rooms[roomId][name] = value;
@@ -413,6 +419,7 @@ io.on('connection', function (socket) {
     const currentGrid = active_grids[roomId];
     const currentRoom = rooms[roomId];
     if (!currentRoom || !currentGrid) {
+      io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
     const players = Object.keys(currentRoom.players);

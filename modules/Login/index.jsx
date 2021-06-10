@@ -57,7 +57,7 @@ const Login = ({ socket }) => {
           </div>
           <div className={styles.svgWrapper}>
             <Players className={styles.svg} />
-            <p>3 - 10 Players</p>
+            <p>3 - 12 Players</p>
           </div>
           <div className={styles.svgWrapper}>
             <RecommendedAge className={styles.svg} />

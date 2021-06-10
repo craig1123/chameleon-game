@@ -61,7 +61,7 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
       <br />
       <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Row>
-          <Form.Group as={Col} controlId="gridBoard">
+          <Form.Group xs={12} sm={6} as={Col} controlId="gridBoard">
             <Form.Control as="select" value={gridSelect} onChange={changeGrid} name="gridSelect" disabled={inProgress}>
               <option value="random">Random Board</option>
               {differentClueBoards.map((title) => (
@@ -71,7 +71,6 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
               ))}
             </Form.Control>
           </Form.Group>
-          <Col />
         </Form.Row>
         <Form.Row>
           <Form.Group as={Col} controlId="privateRoom">

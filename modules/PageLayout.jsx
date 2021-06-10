@@ -21,7 +21,7 @@ const Layout = ({
   children,
   title = '',
   description = defaultDescription,
-  ogImage = '',
+  ogImage = '/chameleon_blue.png',
   googleSiteVerification = '',
   url = '',
   showChamelon = false,

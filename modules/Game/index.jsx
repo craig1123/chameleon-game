@@ -138,6 +138,10 @@ const Game = ({ socket, activeGame, room }) => {
         kickPlayer(args.playerName);
         break;
       }
+      case 'roomClosed': {
+        leaveRoom();
+        break;
+      }
 
       default:
         break;
