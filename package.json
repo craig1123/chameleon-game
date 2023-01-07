@@ -31,6 +31,7 @@
     "react-linkify": "^1.0.0-alpha",
     "react-recipes": "^1.1.1",
     "sass": "^1.32.11",
+    "sharp": "^0.31.3",
     "socket.io": "^4.0.1",
     "socket.io-client": "^4.0.1"
   },

@@ -1,5 +1,5 @@
 module.exports = {
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.mp3$/,
       use: {
