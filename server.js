@@ -11,7 +11,7 @@ const fakeActiveGrids = require('./consts/fakeActiveGrids');
 const fakeChatRooms = require('./consts/fakeChatRooms');
 // const cluster = require('cluster');
 // const numCPUs = require('os').cpus().length;
-// for scaling if we need more CPU cores https://github.com/mars/heroku-nextjs-custom-server-express/blob/master/server.js
+// for scaling if we need more CPU cores
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
