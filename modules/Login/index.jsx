@@ -71,13 +71,22 @@ const Login = ({ socket }) => {
       <a href="/the-chameleon-rules.pdf" target="_blank" rel="noopener noreferrer">
         PDF of the rules
       </a>
+      <br />
+      <a href="https://bigpotato.com/products/the-chameleon" target="_blank" rel="noopener noreferrer">
+        Official Game Website
+      </a>
       <section>
         <h2>Disclaimer</h2>
         <p>
           This is a non-profit project made by a Craigular Joe and some friends out of pure love for the original game.
           It is an adaptation of The Chameleon and provides ease of play/access while maintaining the overall idea. The
-          project is not affiliated with any of the official publishers of The Chameleon in any way. If you are the
-          official publishers, please get in touch with us as we would love to further advance the game with you :)
+          project is not affiliated with any of the official publishers of The Chameleon in any way. Check out the
+          official website here{' '}
+          <a href="https://bigpotato.com/products/the-chameleon" target="_blank" rel="noopener noreferrer">
+            https://bigpotato.com/products/the-chameleon
+          </a>
+          . If you are the official publishers, please get in touch with us as we would love to further advance the game
+          with you :)
         </p>
       </section>
     </Container>
