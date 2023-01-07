@@ -52,11 +52,8 @@ const Lobby = ({ socket, roomsObj, playerName }) => {
       <Header showConnection showPlayersOnline />
       <Toasts socket={socket} callback={handleToasts} />
       <Container className={styles['lobby-wrapper']}>
-        <h3 className="h1">
-          {playerName}{' '}
-          <Link href="/">
-            <a onClick={() => Cookies.remove('playerName')}>&#9998;</a>
-          </Link>
+        <h3 className="h1" onClick={() => Cookies.remove('playerName')}>
+          {playerName} <Link href="/">&#9998;</Link>
         </h3>
         <div className={styles['host-game']}>
           <Button onClick={hostGame}>Host Game</Button>
