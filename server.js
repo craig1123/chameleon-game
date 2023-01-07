@@ -148,7 +148,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('requestuser', function (requestedUsername) {
-    console.log('A user requested sign up: ' + requestedUsername);
+    // console.log('A user requested sign up: ' + requestedUsername);
 
     if (userNameExists(requestedUsername)) {
       socket.emit('signUpError', 'The name you selected is already taken');
@@ -164,7 +164,7 @@ io.on('connection', function (socket) {
     const { requestedRoom } = preferences;
     // host new room
     if (rooms[requestedRoom] === undefined) {
-      console.log(username + ' is requesting a new room: ' + requestedRoom);
+      // console.log(username + ' is requesting a new room: ' + requestedRoom);
       const { gridSelect, privateRoom, chameleonSeeClues, pointsForGuessing, anonymousVoting, clueTimer } = preferences;
       const newGrid = gridSelect === 'random' ? randomGrid() : { gridTitle: gridSelect, grid: wordSheet[gridSelect] };
       rooms[requestedRoom] = {
