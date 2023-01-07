@@ -9,9 +9,6 @@
     "lint": "eslint ./modules",
     "start": "NODE_ENV=production node server.js"
   },
-  "engines": {
-    "node": ">=14.15.5"
-  },
   "cacheDirectories": [
     ".next/cache"
   ],
