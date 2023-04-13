@@ -6,7 +6,7 @@ import CountdownGrid from './CountdownGrid';
 
 import styles from './game.module.scss';
 
-const toMatrix = (arr, width) =>
+const toMatrix = (arr = [], width = 4) =>
   arr.reduce(
     (rows, key, index) => (index % width == 0 ? rows.push([key]) : rows[rows.length - 1].push(key)) && rows,
     []
