@@ -60,7 +60,7 @@ const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
           </button>
         )}
         <h2>{gridTitle}</h2>
-        <h5>{isChameleon ? 'You are the CHAMELEON! Blend in.' : `Keyword: ${keyWord}`}</h5>
+        <h5>{getGridSubTitle(keyWord, gameState, isChameleon)}</h5>
       </div>
       <Collapse in={showTable}>
         <div>
@@ -96,5 +96,20 @@ const GridOfWords = ({ socket, gameState, isChameleon, inProgress }) => {
     </section>
   );
 };
+
+function getGridSubTitle(keyWord, gameState, isChameleon) {
+  if (isChameleon && gameState.boardIsClickable) {
+    return 'Guess/Select a word below';
+  }
+  if (isChameleon) {
+    return 'You are the CHAMELEON! Blend in.';
+  }
+
+  if (!keyWord || keyWord === '') {
+    return '...';
+  }
+
+  return `Keyword: ${keyWord}`;
+}
 
 export default GridOfWords;

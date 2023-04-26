@@ -18,3 +18,34 @@ $theme-colors: (
 .card {
   box-shadow: 0px 2px 4px 2px rgb(0 0 0 / 30%);
 }
+
+$custom-switch-width: 2.5rem;
+$custom-switch-indicator-size: 1rem;
+.custom-switch {
+  .custom-control-label {
+    &::before {
+      left: -($custom-switch-width + $custom-control-gutter);
+      height: 1.25rem;
+      width: $custom-switch-width;
+      // border-radius: $custom-switch-indicator-border-radius;
+    }
+
+    &::after {
+      width: $custom-switch-indicator-size;
+      height: $custom-switch-indicator-size;
+      left: -($custom-switch-width + $custom-control-gutter);
+    }
+  }
+  //   &::after {
+  //     top: add(($font-size-base * $line-height-base - $custom-control-indicator-size) * .5, $custom-control-indicator-border-width * 2);
+  //     left: add(-($custom-switch-width + $custom-control-gutter), $custom-control-indicator-border-width * 2);
+
+  //     @include transition(transform .15s ease-in-out, $custom-forms-transition);
+  //   }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::after {
+      transform: translateX($custom-switch-width - $custom-control-indicator-size);
+    }
+  }
+}

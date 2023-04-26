@@ -102,6 +102,9 @@ const Game = ({ socket, activeGame, room }) => {
 
   const leaveRoom = () => {
     Cookies.remove('roomId');
+    if (socket) {
+      socket.emit('leaveRoom');
+    }
     router.push('/lobby');
   };
 
@@ -179,6 +182,7 @@ const Game = ({ socket, activeGame, room }) => {
                 gameState={gameState}
                 players={players}
                 allCluesReady={allCluesReady}
+                isChameleon={isChameleon}
               />
             </Col>
           </Row>

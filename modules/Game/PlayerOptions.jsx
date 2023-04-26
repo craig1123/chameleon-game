@@ -14,7 +14,7 @@ const getClue = (gameState) => {
   return gameState.players?.[firstUsername]?.clue || '';
 };
 
-const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady }) => {
+const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady, isChameleon }) => {
   const { playerState } = usePlayer();
   const { username } = playerState;
   const { inProgress, chameleonSeeClues, clueTimer } = roomState;
@@ -57,12 +57,12 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
     }
   };
 
-  if (!inProgress) {
+  if (gameState.boardIsClickable) {
     return (
       <div className={styles['player-options']}>
         <Alert style={{ color: 'rgb(50, 115, 153)' }}>
           <h2>
-            Waiting for host to start game
+            {isChameleon ? 'Guess a word in the grid' : 'Chameleon is guessing a word'}
             <Ellipsis />
           </h2>
         </Alert>
@@ -70,12 +70,12 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
     );
   }
 
-  if (gameState.boardIsClickable) {
+  if (!inProgress) {
     return (
       <div className={styles['player-options']}>
         <Alert style={{ color: 'rgb(50, 115, 153)' }}>
           <h2>
-            Chameleon is guessing a word
+            Waiting for host to start game
             <Ellipsis />
           </h2>
         </Alert>
@@ -98,10 +98,9 @@ const PlayerOptions = ({ socket, gameState, roomState, players, allCluesReady })
             <Form.Check
               onChange={handleClueReady}
               checked={clueReady}
+              type="switch"
               label="Clue Ready?"
               name="clueReady"
-              style={{ fontSize: 20 }}
-              className={styles.clueReady}
               disabled={allCluesReady}
             />
           </Form.Group>
