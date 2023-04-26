@@ -264,7 +264,7 @@ io.on('connection', function (socket) {
   // Game ends. Add the points
   // PLAYER OPTIONS
   socket.on('updatePlayerOption', function (options) {
-    if (!active_grids[roomId] || !username || !players[username]) {
+    if (!active_grids[roomId] || !username || !active_grids[roomId].players[username]) {
       io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
@@ -277,7 +277,7 @@ io.on('connection', function (socket) {
   // vote for which player you think the chameleon is
   socket.on('updateVote', function (playerVote) {
     const currentGrid = active_grids[roomId];
-    if (!currentGrid || !username || !players[username]) {
+    if (!currentGrid || !username || !active_grids[roomId].players[username]) {
       io.in(roomId).emit('toaster', { title: 'Room Closed', message: '', type: 'moreInfo' }, { key: 'roomClosed' });
       return;
     }
