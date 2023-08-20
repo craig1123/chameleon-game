@@ -533,7 +533,7 @@ nextApp.prepare().then(() => {
 function getRandomChoice(N) {
   return Math.floor(Math.random() * N);
 }
-function getRandomValue(arr) {
+function getRandomValue(arr = []) {
   return arr[getRandomChoice(arr.length)];
 }
 
