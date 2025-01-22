@@ -51,10 +51,10 @@ const Launcher = ({
     <div id="sc-launcher">
       <div className={classList.join(' ')} onClick={onClick}>
         <MessageCount count={newMessagesCount} open={open} />
-        <img className="sc-open-icon" src="/chat/close-icon.png" />
-        <img className="sc-closed-icon" src="/chat/logo-no-bg.svg" />
+        <img className="sc-open-icon" src="/chat/close-icon.png" alt="close icon" />
+        <img className="sc-closed-icon" src="/chat/logo-no-bg.svg" alt="chat bubble" />
         <audio ref={audio}>
-          <source src="./chat/notification.mp3" type="audio/mpeg" />
+          <source src="/chat/notification.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
       </div>

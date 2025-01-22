@@ -3,6 +3,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import wordSheet from '../../consts/wordSheet';
 
 import styles from './game.module.scss';
@@ -42,14 +44,32 @@ const HostOptions = ({ socket, roomState, gameState, players }) => {
     socket.emit('changeRoomOptions', { name: e.target.name, value: e.target.checked });
   };
 
+  const renderTooltip = (props) => {
+    const message = players.length < 3 ? 'Need at least 3 players to start' : inProgress ? 'Game in progress' : '';
+
+    if (message) {
+      return (
+        <Tooltip id="button-tooltip" {...props}>
+          {message}
+        </Tooltip>
+      );
+    } else {
+      return <div />;
+    }
+  };
+
   return (
     <section className={styles['host-options']}>
       <h4 className="marker">Host Options</h4>
       <Row>
         <Col>
-          <Button type="button" onClick={startGame} disabled={inProgress || players.length < 3}>
-            {playedMoreThanOneRound ? 'Next Round' : 'Start Game'}
-          </Button>
+          <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }} overlay={renderTooltip}>
+            <div style={{ width: 'fit-content' }}>
+              <Button onClick={startGame} disabled={inProgress || players.length < 3}>
+                {playedMoreThanOneRound ? 'Next Round' : 'Start Game'}
+              </Button>
+            </div>
+          </OverlayTrigger>
         </Col>
         <Col>
           <Button type="button" onClick={resetScores}>
