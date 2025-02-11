@@ -60,6 +60,8 @@ const Layout = ({
         <footer className="footer">
           <div className="inner-footer">
             <Image
+              alt="chameleon"
+              priority="false"
               height={isMobile ? '100' : '128'}
               width={isMobile ? '100' : '128'}
               src="/chameleon_blue.png"

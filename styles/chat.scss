@@ -29,6 +29,7 @@
   background-color: white;
   background-size: 100%;
   padding: 20px 0px;
+  height: 100%;
 }
 
 @media (max-width: 480px) {
@@ -231,12 +232,11 @@
 
 // ------------- Message
 .sc-message {
-  width: 300px;
-  margin: auto;
-  margin-top: 10px;
+  padding: 10px 10px 0 10px;
+  width: 100%;
 
   &.prev-user {
-    margin-top: 2px;
+    padding-top: 2px;
   }
 }
 
