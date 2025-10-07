@@ -485,38 +485,43 @@ io.on('connection', function (socket) {
 
 nextApp.prepare().then(() => {
   app.get('/rooms', (req, res) => {
-    res.json(rooms);
+    // res.json(rooms);
+    res.redirect(301, 'https://www.find-the-fox.com/');
   });
 
   app.get('/getRoom/:roomId', (req, res) => {
-    const room = rooms[req.params.roomId];
-    if (room) {
-      res.json(room);
-    } else {
-      res.json(null);
-    }
+    // const room = rooms[req.params.roomId];
+    // if (room) {
+    //   res.json(room);
+    // } else {
+    //   res.json(null);
+    // }
+    res.redirect(301, 'https://www.find-the-fox.com/');
   });
 
   app.get('/getActiveGrid/:roomId', (req, res) => {
-    const grid = active_grids[req.params.roomId];
-    if (grid) {
-      res.json(grid);
-    } else {
-      res.json(null);
-    }
+    // const grid = active_grids[req.params.roomId];
+    // if (grid) {
+    //   res.json(grid);
+    // } else {
+    //   res.json(null);
+    // }
+    res.redirect(301, 'https://www.find-the-fox.com/');
   });
 
   app.get('/getChatRoom/:roomId', (req, res) => {
-    const chatRoom = chat_rooms[req.params.roomId];
-    if (chatRoom) {
-      res.json(chatRoom);
-    } else {
-      res.json(null);
-    }
+    // const chatRoom = chat_rooms[req.params.roomId];
+    // if (chatRoom) {
+    //   res.json(chatRoom);
+    // } else {
+    //   res.json(null);
+    // }
+    res.redirect(301, 'https://www.find-the-fox.com/');
   });
 
   app.get('*', (req, res) => {
-    return nextHandler(req, res);
+    // return nextHandler(req, res);
+    res.redirect(301, 'https://www.find-the-fox.com/');
   });
 
   server.listen(port, (err) => {
